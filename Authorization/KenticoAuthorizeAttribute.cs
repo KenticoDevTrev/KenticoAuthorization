@@ -56,111 +56,124 @@ namespace Authorization.Kentico.MVC
         /// <returns>If the request is authorized.</returns>
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            var CurrentUser = GetCurrentUser(httpContext);
-            // Only find page if needed
-            TreeNode FoundPage = null;
-
-            return CacheHelper.Cache(cs =>
+            AuthorizingEventArgs AuthorizingArgs = new AuthorizingEventArgs()
             {
-                List<string> CacheDependencies = new List<string>();
-                bool Authorized = false;
+                CurrentUser = GetCurrentUser(httpContext),
+                FoundPage = GetTreeNode(httpContext),
+                Authorized = false
+            };
 
+            bool IsAuthorized = false;
 
-                // Will remain true only if no other higher priority authorization items were specified
-                bool OnlyAuthenticatedCheck = true;
-
-                // Roles
-                if (!Authorized && !string.IsNullOrWhiteSpace(Roles))
+            // Start event, allow user to overwrite FoundPage
+            using (var KenticoAuthorizeAuthorizingTaskHandler = AuthorizeEvents.Authorizing.StartEvent(AuthorizingArgs))
+            {
+                if (!AuthorizingArgs.SkipDefaultValidation)
                 {
-                    OnlyAuthenticatedCheck = false;
-                    CacheDependencies.Add("cms.role|all");
-                    CacheDependencies.Add("cms.userrole|all");
-                    CacheDependencies.Add("cms.membershiprole|all");
-                    CacheDependencies.Add("cms.membershipuser|all");
-
-                    foreach (string Role in Roles.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                    AuthorizingArgs.Authorized = CacheHelper.Cache(cs =>
                     {
-                        if (CurrentUser.IsInRole(Role, SiteContext.CurrentSiteName, true, true))
+                        bool Authorized = false;
+                        List<string> CacheDependencies = new List<string>();
+
+                        // Will remain true only if no other higher priority authorization items were specified
+                        bool OnlyAuthenticatedCheck = true;
+
+                        // Roles
+                        if (!Authorized && !string.IsNullOrWhiteSpace(Roles))
+                        {
+                            OnlyAuthenticatedCheck = false;
+                            CacheDependencies.Add("cms.role|all");
+                            CacheDependencies.Add("cms.userrole|all");
+                            CacheDependencies.Add("cms.membershiprole|all");
+                            CacheDependencies.Add("cms.membershipuser|all");
+
+                            foreach (string Role in Roles.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                if (AuthorizingArgs.CurrentUser.IsInRole(Role, SiteContext.CurrentSiteName, true, true))
+                                {
+                                    Authorized = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Users
+                        if (!Authorized && !string.IsNullOrWhiteSpace(Users))
+                        {
+                            OnlyAuthenticatedCheck = false;
+                            foreach (string User in Users.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                if (User.ToLower().Trim() == AuthorizingArgs.CurrentUser.UserName.ToLower().Trim())
+                                {
+                                    Authorized = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Explicit Permissions
+                        if (!Authorized && !string.IsNullOrWhiteSpace(ResourceAndPermissionNames))
+                        {
+                            OnlyAuthenticatedCheck = false;
+                            CacheDependencies.Add("cms.role|all");
+                            CacheDependencies.Add("cms.userrole|all");
+                            CacheDependencies.Add("cms.membershiprole|all");
+                            CacheDependencies.Add("cms.membershipuser|all");
+                            CacheDependencies.Add("cms.permission|all");
+                            CacheDependencies.Add("cms.rolepermission|all");
+
+                            foreach (string ResourcePermissionName in ResourceAndPermissionNames.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                string[] StringParts = ResourcePermissionName.Split('.');
+                                string PermissionName = StringParts.Last();
+                                string ResourceName = string.Join(".", StringParts.Take(StringParts.Length - 1));
+                                if (UserSecurityHelper.IsAuthorizedPerResource(ResourceName, PermissionName, SiteContext.CurrentSiteName, AuthorizingArgs.CurrentUser))
+                                {
+                                    Authorized = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        // Check page level security
+                        if (!Authorized && CheckPageACL)
+                        {
+                            if (AuthorizingArgs.FoundPage != null)
+                            {
+                                OnlyAuthenticatedCheck = false;
+                                CacheDependencies.Add("cms.role|all");
+                                CacheDependencies.Add("cms.userrole|all");
+                                CacheDependencies.Add("cms.membershiprole|all");
+                                CacheDependencies.Add("cms.membershipuser|all");
+                                CacheDependencies.Add("nodeid|" + AuthorizingArgs.FoundPage.NodeID);
+                                CacheDependencies.Add("cms.acl|all");
+                                CacheDependencies.Add("cms.aclitem|all");
+
+                                if (TreeSecurityProvider.IsAuthorizedPerNode(AuthorizingArgs.FoundPage, NodePermissionToCheck, AuthorizingArgs.CurrentUser) != AuthorizationResultEnum.Denied)
+                                {
+                                    Authorized = true;
+                                }
+                            }
+                        }
+
+                        // If there were no other authentication properties, check if this is purely an "just requires authentication" area
+                        if (OnlyAuthenticatedCheck && (!UserAuthenticationRequired || !AuthorizingArgs.CurrentUser.IsPublic()))
                         {
                             Authorized = true;
-                            break;
                         }
-                    }
-                }
 
-                // Users
-                if (!Authorized && !string.IsNullOrWhiteSpace(Users))
-                {
-                    OnlyAuthenticatedCheck = false;
-                    foreach (string User in Users.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (User.ToLower().Trim() == CurrentUser.UserName.ToLower().Trim())
+                        if (cs.Cached)
                         {
-                            Authorized = true;
-                            break;
+                            cs.CacheDependency = CacheHelper.GetCacheDependency(CacheDependencies.Distinct().ToArray());
                         }
-                    }
+
+                        return Authorized;
+                    }, new CacheSettings(CacheAuthenticationResults ? CacheHelper.CacheMinutes(SiteContext.CurrentSiteName) : 0, "AuthorizeCore", AuthorizingArgs.CurrentUser.UserID, (AuthorizingArgs.FoundPage != null ? AuthorizingArgs.FoundPage.DocumentID : -1), SiteContext.CurrentSiteName, Users, Roles, ResourceAndPermissionNames, CheckPageACL, NodePermissionToCheck, CustomUnauthorizedRedirect, UserAuthenticationRequired));
                 }
+                IsAuthorized = AuthorizingArgs.Authorized;
+            }
 
-                // Explicit Permissions
-                if (!Authorized && !string.IsNullOrWhiteSpace(ResourceAndPermissionNames))
-                {
-                    OnlyAuthenticatedCheck = false;
-                    CacheDependencies.Add("cms.role|all");
-                    CacheDependencies.Add("cms.userrole|all");
-                    CacheDependencies.Add("cms.membershiprole|all");
-                    CacheDependencies.Add("cms.membershipuser|all");
-                    CacheDependencies.Add("cms.permission|all");
-                    CacheDependencies.Add("cms.rolepermission|all");
-
-                    foreach (string ResourcePermissionName in ResourceAndPermissionNames.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        string[] StringParts = ResourcePermissionName.Split('.');
-                        string PermissionName = StringParts.Last();
-                        string ResourceName = string.Join(".", StringParts.Take(StringParts.Length - 1));
-                        if (UserSecurityHelper.IsAuthorizedPerResource(ResourceName, PermissionName, SiteContext.CurrentSiteName, CurrentUser))
-                        {
-                            Authorized = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Check page level security
-                if (!Authorized && CheckPageACL)
-                {
-                    FoundPage = GetTreeNode(httpContext);
-                    if (FoundPage != null)
-                    {
-                        OnlyAuthenticatedCheck = false;
-                        CacheDependencies.Add("cms.role|all");
-                        CacheDependencies.Add("cms.userrole|all");
-                        CacheDependencies.Add("cms.membershiprole|all");
-                        CacheDependencies.Add("cms.membershipuser|all");
-                        CacheDependencies.Add("nodeid|" + FoundPage.NodeID);
-                        CacheDependencies.Add("cms.acl|all");
-                        CacheDependencies.Add("cms.aclitem|all");
-
-                        if (TreeSecurityProvider.IsAuthorizedPerNode(FoundPage, NodePermissionToCheck, CurrentUser) != AuthorizationResultEnum.Denied)
-                        {
-                            Authorized = true;
-                        }
-                    }
-                }
-
-                // If there were no other authentication properties, check if this is purely an "just requires authentication" area
-                if (OnlyAuthenticatedCheck && (!UserAuthenticationRequired || !CurrentUser.IsPublic()))
-                {
-                    Authorized = true;
-                }
-
-                if (cs.Cached)
-                {
-                    cs.CacheDependency = CacheHelper.GetCacheDependency(CacheDependencies.Distinct().ToArray());
-                }
-
-                return Authorized;
-            }, new CacheSettings(CacheAuthenticationResults ? CacheHelper.CacheMinutes(SiteContext.CurrentSiteName) : 0, "AuthorizeCore", CurrentUser.UserID, (FoundPage != null ? FoundPage.DocumentID : -1), SiteContext.CurrentSiteName, Users, Roles, ResourceAndPermissionNames, CheckPageACL, NodePermissionToCheck, CustomUnauthorizedRedirect, UserAuthenticationRequired));
+            return IsAuthorized;
         }
 
         /// <summary>

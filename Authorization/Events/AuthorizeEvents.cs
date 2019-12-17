@@ -14,6 +14,8 @@ namespace Authorization.Kentico.MVC.Events
 
         public static GetCultureEventHandler GetCulture;
 
+        public static AuthorizingEventHandler Authorizing;
+
         static AuthorizeEvents()
         {
             GetPage = new GetPageEventHandler()
@@ -29,6 +31,10 @@ namespace Authorization.Kentico.MVC.Events
             GetCulture = new GetCultureEventHandler()
             {
                 Name = "AuthorizeEvents.GetCulture"
+            };
+            Authorizing = new AuthorizingEventHandler()
+            {
+                Name = "AuthorizeEvents.Authorizing"
             };
         }
     }
