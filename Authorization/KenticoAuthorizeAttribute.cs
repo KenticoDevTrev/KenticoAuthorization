@@ -28,29 +28,171 @@ namespace Authorization.Kentico.MVC
         /// Comma, semi-color or pipe delimited list of ResourceName+PermissionName, such as CMS.Blog.Modify|My_Module.MyCustomPermission
         /// </summary>
         public string ResourceAndPermissionNames { get; set; }
+
         /// <summary>
         /// Set to true to leverage Kentico's Page Security, must be able to find the node for this check to run
         /// </summary>
         public bool CheckPageACL { get; set; } = false;
+
         /// <summary>
         /// The Node Permission this will check when it does an ACL check.  Default is Read
         /// </summary>
         public NodePermissionsEnum NodePermissionToCheck { get; set; } = NodePermissionsEnum.Read;
+
         /// <summary>
         /// Custom redirect path, useful if you want to direct users to a specific unauthorized page or perhaps a JsonResult action for AJAX calls.
         /// </summary>
         public string CustomUnauthorizedRedirect { get; set; }
+
         /// <summary>
         /// True by default, this will cache authentication requests using Kentico's CacheHelper.
         /// </summary>
         public bool CacheAuthenticationResults { get; set; } = true;
 
         /// <summary>
+        /// Checks Roles, Users, Resource Names, and Page ACL depending on configuration
+        /// </summary>
+        /// <param name="httpContext">The Route Context</param>
+        /// <returns>If the request is authorized.</returns>
+        protected override bool AuthorizeCore(HttpContextBase httpContext)
+        {
+            var CurrentUser = GetCurrentUser(httpContext);
+            // Only find page if needed
+            TreeNode FoundPage = null;
+
+            return CacheHelper.Cache(cs =>
+            {
+                List<string> CacheDependencies = new List<string>();
+                bool Authorized = false;
+
+
+                // Will remain true only if no other higher priority authorization items were specified
+                bool OnlyAuthenticatedCheck = true;
+
+                // Roles
+                if (!Authorized && !string.IsNullOrWhiteSpace(Roles))
+                {
+                    OnlyAuthenticatedCheck = false;
+                    CacheDependencies.Add("cms.role|all");
+                    CacheDependencies.Add("cms.userrole|all");
+                    CacheDependencies.Add("cms.membershiprole|all");
+                    CacheDependencies.Add("cms.membershipuser|all");
+
+                    foreach (string Role in Roles.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (CurrentUser.IsInRole(Role, SiteContext.CurrentSiteName, true, true))
+                        {
+                            Authorized = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Users
+                if (!Authorized && !string.IsNullOrWhiteSpace(Users))
+                {
+                    OnlyAuthenticatedCheck = false;
+                    foreach (string User in Users.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        if (User.ToLower().Trim() == CurrentUser.UserName.ToLower().Trim())
+                        {
+                            Authorized = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Explicit Permissions
+                if (!Authorized && !string.IsNullOrWhiteSpace(ResourceAndPermissionNames))
+                {
+                    OnlyAuthenticatedCheck = false;
+                    CacheDependencies.Add("cms.role|all");
+                    CacheDependencies.Add("cms.userrole|all");
+                    CacheDependencies.Add("cms.membershiprole|all");
+                    CacheDependencies.Add("cms.membershipuser|all");
+                    CacheDependencies.Add("cms.permission|all");
+                    CacheDependencies.Add("cms.rolepermission|all");
+
+                    foreach (string ResourcePermissionName in ResourceAndPermissionNames.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        string[] StringParts = ResourcePermissionName.Split('.');
+                        string PermissionName = StringParts.Last();
+                        string ResourceName = string.Join(".", StringParts.Take(StringParts.Length - 1));
+                        if (UserSecurityHelper.IsAuthorizedPerResource(ResourceName, PermissionName, SiteContext.CurrentSiteName, CurrentUser))
+                        {
+                            Authorized = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Check page level security
+                if (!Authorized && CheckPageACL)
+                {
+                    FoundPage = GetTreeNode(httpContext);
+                    if (FoundPage != null)
+                    {
+                        OnlyAuthenticatedCheck = false;
+                        CacheDependencies.Add("cms.role|all");
+                        CacheDependencies.Add("cms.userrole|all");
+                        CacheDependencies.Add("cms.membershiprole|all");
+                        CacheDependencies.Add("cms.membershipuser|all");
+                        CacheDependencies.Add("nodeid|" + FoundPage.NodeID);
+                        CacheDependencies.Add("cms.acl|all");
+                        CacheDependencies.Add("cms.aclitem|all");
+
+                        if (TreeSecurityProvider.IsAuthorizedPerNode(FoundPage, NodePermissionToCheck, CurrentUser) != AuthorizationResultEnum.Denied)
+                        {
+                            Authorized = true;
+                        }
+                    }
+                }
+
+                // If there were no other authentication properties, check if this is purely an "just requires authentication" area
+                if (OnlyAuthenticatedCheck && (!UserAuthenticationRequired || !CurrentUser.IsPublic()))
+                {
+                    Authorized = true;
+                }
+
+                if (cs.Cached)
+                {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency(CacheDependencies.Distinct().ToArray());
+                }
+
+                return Authorized;
+            }, new CacheSettings(CacheAuthenticationResults ? CacheHelper.CacheMinutes(SiteContext.CurrentSiteName) : 0, "AuthorizeCore", CurrentUser.UserID, (FoundPage != null ? FoundPage.DocumentID : -1), SiteContext.CurrentSiteName, Users, Roles, ResourceAndPermissionNames, CheckPageACL, NodePermissionToCheck, CustomUnauthorizedRedirect, UserAuthenticationRequired));
+        }
+
+        /// <summary>
+        /// Main Authorization method, if not authorized adjusted the filterContext's results to redirect to an Unauthorized result or custom redirect.
+        /// </summary>
+        /// <param name="filterContext"></param>
+        public override void OnAuthorization(AuthorizationContext filterContext)
+        {
+            // If they are authorized, handle accordingly
+            if (!AuthorizeCore(filterContext.HttpContext))
+            {
+                // Custom provided redirect
+                if (!string.IsNullOrWhiteSpace(CustomUnauthorizedRedirect))
+                {
+                    filterContext.Result = new RedirectResult(CustomUnauthorizedRedirect);
+                }
+                else
+                {
+                    // Just throw an unauthorzied request
+                    filterContext.Result = new HttpUnauthorizedResult();
+                }
+            }
+        }
+
+        #region "TreeNode Retreival"
+
+        /// <summary>
         /// Can override this if you need to implement custom logic, such as a custom route.  httpContext.Request.RequestContext.RouteData.Values is often used to grab route data.
         /// </summary>
         /// <param name="httpContext">The HttpContext of the request</param>
         /// <returns>The Tree Node for this request, null acceptable.</returns>
-        public TreeNode GetTreeNode(HttpContextBase httpContext)
+        private TreeNode GetTreeNode(HttpContextBase httpContext)
         {
             TreeNode FoundNode = null;
             string SiteName = SiteContextSafe().SiteName;
@@ -115,6 +257,73 @@ namespace Authorization.Kentico.MVC
             return PageArgs.FoundPage;
         }
 
+        /// <summary>
+        /// Gets the Relative Url without the Application Path, and with Url cleaned.
+        /// </summary>
+        /// <param name="RelativeUrl"></param>
+        /// <param name="ApplicationPath"></param>
+        /// <param name="SiteName"></param>
+        /// <returns></returns>
+        private string GetUrl(string RelativeUrl, string ApplicationPath, string SiteName)
+        {
+            // Remove Application Path from Relative Url if it exists at the beginning
+            if (!string.IsNullOrWhiteSpace(ApplicationPath) && ApplicationPath != "/" && RelativeUrl.ToLower().IndexOf(ApplicationPath.ToLower()) == 0)
+            {
+                RelativeUrl = RelativeUrl.Substring(ApplicationPath.Length);
+            }
+
+            return GetCleanUrl(RelativeUrl, SiteName);
+        }
+
+        /// <summary>
+        /// Gets the Url cleaned up with special characters removed
+        /// </summary>
+        /// <param name="Url"></param>
+        /// <param name="SiteName"></param>
+        /// <returns></returns>
+        private string GetCleanUrl(string Url, string SiteName)
+        {
+            // Remove trailing or double //'s and any url parameters / anchors
+            Url = "/" + Url.Trim("/ ".ToCharArray()).Split('?')[0].Split('#')[0];
+            Url = HttpUtility.UrlDecode(Url);
+
+            // Replace forbidden characters
+            // Remove / from the forbidden characters because that is part of the Url, of course.
+
+            if (!string.IsNullOrWhiteSpace(SiteName))
+            {
+                string ForbiddenCharacters = URLHelper.ForbiddenURLCharacters(SiteName).Replace("/", "");
+                string Replacement = URLHelper.ForbiddenCharactersReplacement(SiteName).ToString();
+                Url = ReplaceAnyCharInString(Url, ForbiddenCharacters.ToCharArray(), Replacement);
+            }
+
+            // Escape special url characters
+            Url = URLHelper.EscapeSpecialCharacters(Url);
+
+            return Url;
+        }
+
+        /// <summary>
+        /// Replaces any char in the char array with the replace value for the string
+        /// </summary>
+        /// <param name="value">The string to replace values in</param>
+        /// <param name="CharsToReplace">The character array of characters to replace</param>
+        /// <param name="ReplaceValue">The value to replace them with</param>
+        /// <returns>The cleaned string</returns>
+        private string ReplaceAnyCharInString(string value, char[] CharsToReplace, string ReplaceValue)
+        {
+            string[] temp = value.Split(CharsToReplace, StringSplitOptions.RemoveEmptyEntries);
+            return String.Join(ReplaceValue, temp);
+        }
+
+        #endregion
+
+        #region "Culture Retrieval"
+
+        /// <summary>
+        /// Gets the Current Culture, needed for User Culture Permissions
+        /// </summary>
+        /// <returns></returns>
         private string GetCulture()
         {
             string SiteName = SiteContextSafe().SiteName;
@@ -177,60 +386,12 @@ namespace Authorization.Kentico.MVC
             return Culture;
         }
 
+        #endregion
 
-        private static string GetUrl(string RelativeUrl, string ApplicationPath, string SiteName)
-        {
-            // Remove Application Path from Relative Url if it exists at the beginning
-            if (!string.IsNullOrWhiteSpace(ApplicationPath) && ApplicationPath != "/" && RelativeUrl.ToLower().IndexOf(ApplicationPath.ToLower()) == 0)
-            {
-                RelativeUrl = RelativeUrl.Substring(ApplicationPath.Length);
-            }
-
-            return GetCleanUrl(RelativeUrl, SiteName);
-        }
-
-        public static string GetCleanUrl(string Url, string SiteName)
-        {
-            // Remove trailing or double //'s and any url parameters / anchors
-            Url = "/" + Url.Trim("/ ".ToCharArray()).Split('?')[0].Split('#')[0];
-            Url = HttpUtility.UrlDecode(Url);
-
-            // Replace forbidden characters
-            // Remove / from the forbidden characters because that is part of the Url, of course.
-
-            if (!string.IsNullOrWhiteSpace(SiteName))
-            {
-                string ForbiddenCharacters = URLHelper.ForbiddenURLCharacters(SiteName).Replace("/", "");
-                string Replacement = URLHelper.ForbiddenCharactersReplacement(SiteName).ToString();
-                Url = ReplaceAnyCharInString(Url, ForbiddenCharacters.ToCharArray(), Replacement);
-            }
-
-            // Escape special url characters
-            Url = URLHelper.EscapeSpecialCharacters(Url);
-
-            return Url;
-        }
-
-        public static SiteInfo SiteContextSafe()
-        {
-            return SiteContext.CurrentSite != null ? SiteContext.CurrentSite : SiteInfoProvider.GetSites().TopN(1).FirstOrDefault();
-        }
+        #region "User Retrieval"
 
         /// <summary>
-        /// Replaces any char in the char array with the replace value for the string
-        /// </summary>
-        /// <param name="value">The string to replace values in</param>
-        /// <param name="CharsToReplace">The character array of characters to replace</param>
-        /// <param name="ReplaceValue">The value to replace them with</param>
-        /// <returns>The cleaned string</returns>
-        private static string ReplaceAnyCharInString(string value, char[] CharsToReplace, string ReplaceValue)
-        {
-            string[] temp = value.Split(CharsToReplace, StringSplitOptions.RemoveEmptyEntries);
-            return String.Join(ReplaceValue, temp);
-        }
-
-        /// <summary>
-        /// Returns the user to check.  Use httpContext.User
+        /// Returns the user to check.  Default is to use the HttpContext's User Identity as the username
         /// </summary>
         /// <param name="httpContext">The HttpContext of the request</param>
         /// <returns>The UserInfo, should return the Public user if they are not logged in.</returns>
@@ -286,134 +447,23 @@ namespace Authorization.Kentico.MVC
             return FoundUser;
         }
 
+        #endregion
+
         /// <summary>
-        /// Checks Roles, Users, Resource Names, and Page ACL depending on configuration
+        /// Returns the SiteInfo, if not findable does the first site in Kentico
         /// </summary>
-        /// <param name="httpContext">The Route Context</param>
-        /// <returns>If the request is authorized.</returns>
-        protected override bool AuthorizeCore(HttpContextBase httpContext)
+        /// <returns></returns>
+        private SiteInfo SiteContextSafe()
         {
-            var CurrentUser = GetCurrentUser(httpContext);
-            TreeNode FoundPage = GetTreeNode(httpContext);
-
-            return CacheHelper.Cache<bool>(cs =>
+            return SiteContext.CurrentSite ?? CacheHelper.Cache(cs =>
             {
-                List<string> CacheDependencies = new List<string>();
-                bool Authorized = false;
-
-                // Will remain true only if no other higher priority authorization items were specified
-                bool OnlyAuthenticatedCheck = true;
-
-                // Roles
-                if (!Authorized && !string.IsNullOrWhiteSpace(Roles))
-                {
-                    OnlyAuthenticatedCheck = false;
-                    CacheDependencies.Add("cms.role|all");
-                    CacheDependencies.Add("cms.userrole|all");
-                    CacheDependencies.Add("cms.membershiprole|all");
-                    CacheDependencies.Add("cms.membershipuser|all");
-
-                    foreach (string Role in Roles.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (CurrentUser.IsInRole(Role, SiteContext.CurrentSiteName, true, true))
-                        {
-                            Authorized = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Users
-                if (!Authorized && !string.IsNullOrWhiteSpace(Users))
-                {
-                    OnlyAuthenticatedCheck = false;
-                    foreach (string User in Users.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (User.ToLower().Trim() == CurrentUser.UserName.ToLower().Trim())
-                        {
-                            Authorized = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Explicit Permissions
-                if (!Authorized && !string.IsNullOrWhiteSpace(ResourceAndPermissionNames))
-                {
-                    OnlyAuthenticatedCheck = false;
-                    CacheDependencies.Add("cms.role|all");
-                    CacheDependencies.Add("cms.userrole|all");
-                    CacheDependencies.Add("cms.membershiprole|all");
-                    CacheDependencies.Add("cms.membershipuser|all");
-                    CacheDependencies.Add("cms.permission|all");
-                    CacheDependencies.Add("cms.rolepermission|all");
-
-                    foreach (string ResourcePermissionName in ResourceAndPermissionNames.Split(";,|".ToCharArray(), StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        string[] StringParts = ResourcePermissionName.Split('.');
-                        string PermissionName = StringParts.Last();
-                        string ResourceName = string.Join(".", StringParts.Take(StringParts.Length - 1));
-                        if (UserSecurityHelper.IsAuthorizedPerResource(ResourceName, PermissionName, SiteContext.CurrentSiteName, CurrentUser))
-                        {
-                            Authorized = true;
-                            break;
-                        }
-                    }
-                }
-
-                // Check page level security
-                if (!Authorized && CheckPageACL && FoundPage != null)
-                {
-                    OnlyAuthenticatedCheck = false;
-                    CacheDependencies.Add("cms.role|all");
-                    CacheDependencies.Add("cms.userrole|all");
-                    CacheDependencies.Add("cms.membershiprole|all");
-                    CacheDependencies.Add("cms.membershipuser|all");
-                    CacheDependencies.Add("nodeid|" + FoundPage.NodeID);
-                    CacheDependencies.Add("cms.acl|all");
-                    CacheDependencies.Add("cms.aclitem|all");
-
-                    if (TreeSecurityProvider.IsAuthorizedPerNode(FoundPage, NodePermissionToCheck, CurrentUser) != AuthorizationResultEnum.Denied)
-                    {
-                        Authorized = true;
-                    }
-                }
-
-                // If there were no other authentication properties, check if this is purely an "just requires authentication" area
-                if (OnlyAuthenticatedCheck && (!UserAuthenticationRequired || !CurrentUser.IsPublic()))
-                {
-                    Authorized = true;
-                }
-
                 if (cs.Cached)
                 {
-                    cs.CacheDependency = CacheHelper.GetCacheDependency(CacheDependencies.Distinct().ToArray());
+                    cs.CacheDependency = CacheHelper.GetCacheDependency("cms.site|all");
                 }
-
-                return Authorized;
-            }, new CacheSettings(CacheAuthenticationResults ? CacheHelper.CacheMinutes(SiteContext.CurrentSiteName) : 0, "AuthorizeCore", CurrentUser.UserID, (FoundPage != null ? FoundPage.DocumentID : -1), SiteContext.CurrentSiteName, Users, Roles, ResourceAndPermissionNames, CheckPageACL, NodePermissionToCheck, CustomUnauthorizedRedirect, UserAuthenticationRequired));
+                return SiteInfoProvider.GetSites().TopN(1).FirstOrDefault();
+            }, new CacheSettings(1440, "KenticoAuthorizationGetSiteContextSafe"));
         }
 
-        /// <summary>
-        /// Main Authorization method, if not authorized adjusted the filterContext's results to redirect to an Unauthorized result or custom redirect.
-        /// </summary>
-        /// <param name="filterContext"></param>
-        public override void OnAuthorization(AuthorizationContext filterContext)
-        {
-            // If they are authorized, handle accordingly
-            if (!AuthorizeCore(filterContext.HttpContext))
-            {
-                // Custom provided redirect
-                if (!string.IsNullOrWhiteSpace(CustomUnauthorizedRedirect))
-                {
-                    filterContext.Result = new RedirectResult(CustomUnauthorizedRedirect);
-                }
-                else
-                {
-                    // Just throw an unauthorzied request
-                    filterContext.Result = new HttpUnauthorizedResult();
-                }
-            }
-        }
     }
 }
