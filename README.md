@@ -1,4 +1,4 @@
-# Kentico Authorization Attribute
+# Kentico Authorization Attribute w/ Dynamic Routing
 Kentico Authorization Attribute for Kentico MVC, provides a [KenticoAuthorize] Attribute that you can add to your ActionResult methods that can allows for permissions on:
 
 1. User Authenticated
@@ -9,22 +9,18 @@ Kentico Authorization Attribute for Kentico MVC, provides a [KenticoAuthorize] A
 
 It also allows for a custom Unauthorized Redirect path in case you need to specify a specific location to send unauthorized users.
 
+This module uses the DynamicRouting.Kentico.MVC package to retrieve the current page.
+
 # Installation
 1. Install the `Authorization.Kentico.MVC` NuGet Package to your MVC Site
-1. Overwrite any Events if you need (expecially the GetPage)
+1. Overwrite any Events if you need
 1. Add `[KenticoAuthorize()]` attributes to your ActionResult methods.
 
 # Usage
 1. Add the `[KenticoAuthorize()]` Attribute to your ActionResult and pass in any properties you wish to configure.
 
 # Events
-The Authorization Module has 4 events you can hook into in order to customize it's behavior. 
-
-## AuthorizeEvents.GetPage
-This allows you to modify the retrieval of the current page.  By default, it will try to find the page based on the relative path with a match on the NodeAliasPath.
-
-## AuthorizeEvents.GetCulture
-This allows you to modify the retrieval of the current culture.  This is used in the GetPage logic to get the proper TreeNode.  By default, It will use the PreviewCulture (if in preview), LocalizationContext.CurrentCulture, and lastly the System.Globalization.CultureInfo.CurrentCulture.Name.
+The Authorization Module has 2 events you can hook into in order to customize it's behavior. 
 
 ## AuthorizeEvents.GetUser
 This allows you to modify the retrieval of the current user.  By default it will use the HttpContext.User.Identity to get the UserName of the current user.  Public is the default user if none found or the found user is disabled.

@@ -6,11 +6,11 @@ using CMS;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Kentico Authorization")]
-[assembly: AssemblyDescription("Authorization attribute that integrates with Kentico user permissions, including module permissions and page ACL permissions")]
+[assembly: AssemblyTitle("Kentico Authorization - Dynamic Routing")]
+[assembly: AssemblyDescription("Authorization attribute that integrates with Kentico user permissions, including module permissions and page ACL permissions, leveraging the DynamicRouting.Kentico.MVC library for retreiving the page.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Heartland Business Systems")]
-[assembly: AssemblyProduct("Kentico Authorization")]
+[assembly: AssemblyProduct("Kentico Authorization - Dynamic Routing")]
 [assembly: AssemblyCopyright("Copyright 2019 Heartland Business Systems")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

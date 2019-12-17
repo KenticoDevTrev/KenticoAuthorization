@@ -6,6 +6,7 @@ using CMS.Helpers;
 using CMS.Localization;
 using CMS.Membership;
 using CMS.SiteProvider;
+using DynamicRouting;
 using Kentico.Content.Web.Mvc;
 using Kentico.Web.Mvc;
 using System;
@@ -59,7 +60,7 @@ namespace Authorization.Kentico.MVC
             AuthorizingEventArgs AuthorizingArgs = new AuthorizingEventArgs()
             {
                 CurrentUser = GetCurrentUser(httpContext),
-                FoundPage = GetTreeNode(httpContext),
+                FoundPage = GetTreeNode(),
                 Authorized = false
             };
 
@@ -205,198 +206,10 @@ namespace Authorization.Kentico.MVC
         /// </summary>
         /// <param name="httpContext">The HttpContext of the request</param>
         /// <returns>The Tree Node for this request, null acceptable.</returns>
-        private TreeNode GetTreeNode(HttpContextBase httpContext)
+        private TreeNode GetTreeNode()
         {
-            TreeNode FoundNode = null;
-            string SiteName = SiteContextSafe().SiteName;
-            string DefaultCulture = SiteContextSafe().DefaultVisitorCulture;
-            // Create GetPage Event Arguments
-            GetPageEventArgs PageArgs = new GetPageEventArgs()
-            {
-                RelativeUrl = GetUrl(httpContext.Request.Url.AbsolutePath, httpContext.Request.ApplicationPath, SiteName),
-                HttpContext = httpContext,
-                SiteName = SiteName,
-                Culture = GetCulture(),
-                DefaultCulture = DefaultCulture
-            };
-
-            // Start event, allow user to overwrite FoundPage
-            using (var KenticoAuthorizeGetPageTaskHandler = AuthorizeEvents.GetPage.StartEvent(PageArgs))
-            {
-                if (PageArgs.FoundPage == null)
-                {
-                    try
-                    {
-                        // Try to find the page from node alias path, default lookup type
-                        PageArgs.FoundPage = CacheHelper.Cache(cs =>
-                        {
-                            TreeNode Page = DocumentHelper.GetDocuments()
-                            .Path(PageArgs.RelativeUrl, PathTypeEnum.Single)
-                            .Culture(!string.IsNullOrWhiteSpace(PageArgs.Culture) ? PageArgs.Culture : PageArgs.DefaultCulture)
-                            .CombineWithAnyCulture()
-                            .CombineWithDefaultCulture()
-                            .OnSite(PageArgs.SiteName)
-                            .Columns("NodeACLID", "NodeID", "DocumentID", "DocumentCulture") // The Fields required for authorization
-                            .FirstOrDefault();
-
-                            if (cs.Cached && Page != null)
-                            {
-                                cs.CacheDependency = CacheHelper.GetCacheDependency(new string[]
-                                {
-                                $"nodeid|{Page.NodeID}",
-                                $"documentid|{Page.DocumentID}"
-                                });
-                            }
-                            return Page;
-                        }, new CacheSettings(1440, "KenticoAuthorizeGetTreeNode", PageArgs.RelativeUrl, PageArgs.SiteName));
-                    }
-                    catch (Exception ex)
-                    {
-                        PageArgs.ExceptionOnLookup = ex;
-                    }
-                }
-                else if (PageArgs.FoundPage.NodeACLID <= 0)
-                {
-                    PageArgs.ExceptionOnLookup = new NullReferenceException("The TreeNode does not contain the NodeACLID property, which is required for Permission lookup.");
-                }
-
-                // Finish the event
-                KenticoAuthorizeGetPageTaskHandler.FinishEvent();
-
-                // Pass the Found Node back from the args
-                FoundNode = PageArgs.FoundPage;
-            }
-
-            return PageArgs.FoundPage;
-        }
-
-        /// <summary>
-        /// Gets the Relative Url without the Application Path, and with Url cleaned.
-        /// </summary>
-        /// <param name="RelativeUrl"></param>
-        /// <param name="ApplicationPath"></param>
-        /// <param name="SiteName"></param>
-        /// <returns></returns>
-        private string GetUrl(string RelativeUrl, string ApplicationPath, string SiteName)
-        {
-            // Remove Application Path from Relative Url if it exists at the beginning
-            if (!string.IsNullOrWhiteSpace(ApplicationPath) && ApplicationPath != "/" && RelativeUrl.ToLower().IndexOf(ApplicationPath.ToLower()) == 0)
-            {
-                RelativeUrl = RelativeUrl.Substring(ApplicationPath.Length);
-            }
-
-            return GetCleanUrl(RelativeUrl, SiteName);
-        }
-
-        /// <summary>
-        /// Gets the Url cleaned up with special characters removed
-        /// </summary>
-        /// <param name="Url"></param>
-        /// <param name="SiteName"></param>
-        /// <returns></returns>
-        private string GetCleanUrl(string Url, string SiteName)
-        {
-            // Remove trailing or double //'s and any url parameters / anchors
-            Url = "/" + Url.Trim("/ ".ToCharArray()).Split('?')[0].Split('#')[0];
-            Url = HttpUtility.UrlDecode(Url);
-
-            // Replace forbidden characters
-            // Remove / from the forbidden characters because that is part of the Url, of course.
-
-            if (!string.IsNullOrWhiteSpace(SiteName))
-            {
-                string ForbiddenCharacters = URLHelper.ForbiddenURLCharacters(SiteName).Replace("/", "");
-                string Replacement = URLHelper.ForbiddenCharactersReplacement(SiteName).ToString();
-                Url = ReplaceAnyCharInString(Url, ForbiddenCharacters.ToCharArray(), Replacement);
-            }
-
-            // Escape special url characters
-            Url = URLHelper.EscapeSpecialCharacters(Url);
-
-            return Url;
-        }
-
-        /// <summary>
-        /// Replaces any char in the char array with the replace value for the string
-        /// </summary>
-        /// <param name="value">The string to replace values in</param>
-        /// <param name="CharsToReplace">The character array of characters to replace</param>
-        /// <param name="ReplaceValue">The value to replace them with</param>
-        /// <returns>The cleaned string</returns>
-        private string ReplaceAnyCharInString(string value, char[] CharsToReplace, string ReplaceValue)
-        {
-            string[] temp = value.Split(CharsToReplace, StringSplitOptions.RemoveEmptyEntries);
-            return String.Join(ReplaceValue, temp);
-        }
-
-        #endregion
-
-        #region "Culture Retrieval"
-
-        /// <summary>
-        /// Gets the Current Culture, needed for User Culture Permissions
-        /// </summary>
-        /// <returns></returns>
-        private string GetCulture()
-        {
-            string SiteName = SiteContextSafe().SiteName;
-            string DefaultCulture = SiteContextSafe().DefaultVisitorCulture;
-            string Culture = "";
-
-            // Handle Preview, during Route Config the Preview isn't available and isn't really needed, so ignore the thrown exception
-            bool PreviewEnabled = false;
-            try
-            {
-                PreviewEnabled = HttpContext.Current.Kentico().Preview().Enabled;
-            }
-            catch (InvalidOperationException) { }
-
-            GetCultureEventArgs CultureArgs = new GetCultureEventArgs()
-            {
-                DefaultCulture = DefaultCulture,
-                SiteName = SiteName,
-                Request = HttpContext.Current.Request,
-                PreviewEnabled = PreviewEnabled
-            };
-
-            using (var AuthorizeGetCultureTaskHandler = AuthorizeEvents.GetCulture.StartEvent(CultureArgs))
-            {
-
-                // If Preview is enabled, use the Kentico Preview CultureName
-                if (PreviewEnabled)
-                {
-                    try
-                    {
-                        CultureArgs.Culture = HttpContext.Current.Kentico().Preview().CultureName;
-                    }
-                    catch (Exception) { }
-                }
-
-                // If culture still not set, use the LocalizationContext.CurrentCulture
-                if (string.IsNullOrWhiteSpace(CultureArgs.Culture))
-                {
-                    try
-                    {
-                        CultureArgs.Culture = LocalizationContext.CurrentCulture.CultureName;
-                    }
-                    catch (Exception) { }
-                }
-
-                // If that fails then use the System.Globalization.CultureInfo
-                if (string.IsNullOrWhiteSpace(CultureArgs.Culture))
-                {
-                    try
-                    {
-                        CultureArgs.Culture = System.Globalization.CultureInfo.CurrentCulture.Name;
-                    }
-                    catch (Exception) { }
-                }
-
-                AuthorizeGetCultureTaskHandler.FinishEvent();
-                // set the culture
-                Culture = CultureArgs.Culture;
-            }
-            return Culture;
+            // Use Dynamic Routing
+            return (TreeNode) DynamicRouteHelper.GetPage(Columns: new string[] { "NodeACLID", "NodeID", "DocumentID", "DocumentCulture" });
         }
 
         #endregion
@@ -461,22 +274,6 @@ namespace Authorization.Kentico.MVC
         }
 
         #endregion
-
-        /// <summary>
-        /// Returns the SiteInfo, if not findable does the first site in Kentico
-        /// </summary>
-        /// <returns></returns>
-        private SiteInfo SiteContextSafe()
-        {
-            return SiteContext.CurrentSite ?? CacheHelper.Cache(cs =>
-            {
-                if (cs.Cached)
-                {
-                    cs.CacheDependency = CacheHelper.GetCacheDependency("cms.site|all");
-                }
-                return SiteInfoProvider.GetSites().TopN(1).FirstOrDefault();
-            }, new CacheSettings(1440, "KenticoAuthorizationGetSiteContextSafe"));
-        }
 
     }
 }

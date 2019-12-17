@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Authorization.Kentico.MVC</RootNamespace>
-    <AssemblyName>Authorization.Kentico.MVC</AssemblyName>
+    <AssemblyName>Authorization.Kentico.MVC.DynamicRouting</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -258,6 +258,12 @@
     <Reference Include="DotNetOpenAuth, Version=4.0.0.11165, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <HintPath>..\packages\Kentico.Libraries.12.0.29\lib\net461\DotNetOpenAuth.dll</HintPath>
     </Reference>
+    <Reference Include="DynamicRouting.Kentico.Base, Version=12.29.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicRouting.Kentico.MVC.12.29.5\lib\net461\DynamicRouting.Kentico.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="DynamicRouting.Kentico.MVC, Version=12.29.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DynamicRouting.Kentico.MVC.12.29.5\lib\net461\DynamicRouting.Kentico.MVC.dll</HintPath>
+    </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
       <HintPath>..\packages\Facebook.6.4.2\lib\net45\Facebook.dll</HintPath>
     </Reference>
@@ -485,7 +491,7 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
@@ -500,16 +506,16 @@
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -527,13 +533,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\AuthorizingEventArgs.cs" />
-    <Compile Include="Events\GetCultureEventArgs.cs" />
     <Compile Include="Events\AuthorizingEventHandler.cs" />
-    <Compile Include="Events\GetCultureEventHandler.cs" />
     <Compile Include="Events\GetUserEventArgs.cs" />
-    <Compile Include="Events\GetPageEventArgs.cs" />
     <Compile Include="Events\GetUserEventHandler.cs" />
-    <Compile Include="Events\GetPageEventHandler.cs" />
     <Compile Include="KenticoAuthorizeAttribute.cs" />
     <Compile Include="Events\AuthorizeEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
