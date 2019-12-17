@@ -547,8 +547,6 @@
     <Folder Include="bin\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- Below Import allows you to inject ms build import logic into the build processes -->
-  <Import Project="$(ProjectDir)\..\Targets\Kentico.Resources.targets" />
   <Import Project="..\packages\Kentico.LanguagePack.English.12.0.29\build\Kentico.LanguagePack.English.targets" Condition="Exists('..\packages\Kentico.LanguagePack.English.12.0.29\build\Kentico.LanguagePack.English.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
