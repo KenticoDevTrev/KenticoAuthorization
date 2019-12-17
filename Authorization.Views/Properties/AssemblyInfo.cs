@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CMS;
@@ -6,12 +6,12 @@ using CMS;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AssemblyTitleHere")]
-[assembly: AssemblyDescription("AssemblyDescriptionHere")]
+[assembly: AssemblyTitle("Kentico Authorization")]
+[assembly: AssemblyDescription("Authorization attribute that integrates with Kentico user permissions, including module permissions and page ACL permissions")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AssemblyCompanyHere")]
-[assembly: AssemblyProduct("AssemblyProductHere")]
-[assembly: AssemblyCopyright("AssemblyCopyrightHere")]
+[assembly: AssemblyCompany("Heartland Business Systems")]
+[assembly: AssemblyProduct("Kentico Authorization")]
+[assembly: AssemblyCopyright("Copyright 2019 Heartland Business Systems")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyDiscoverable]
@@ -22,7 +22,7 @@ using CMS;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("3703e296-cd7c-47ff-9ab5-19b621c80b15")]
+[assembly: Guid("aa9ba9c1-8a17-41f8-98bc-cdf1521de76e")]
 
 // Version information for an assembly consists of the following four values:
 //
