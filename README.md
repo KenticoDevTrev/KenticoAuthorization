@@ -12,7 +12,7 @@ It also allows for a custom Unauthorized Redirect path in case you need to speci
 This module uses the DynamicRouting.Kentico.MVC package to retrieve the current page.
 
 # Installation
-1. Install the `Authorization.Kentico.MVC` NuGet Package to your MVC Site
+1. Install the `Authorization.Kentico.MVC.DynamicRouting` NuGet Package to your MVC Site
 1. Overwrite any Events if you need
 1. Add `[KenticoAuthorize()]` attributes to your ActionResult methods.
 
