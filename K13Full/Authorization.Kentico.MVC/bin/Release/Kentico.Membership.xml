@@ -1,0 +1,1412 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kentico.Membership</name>
+    </assembly>
+    <members>
+        <member name="T:Kentico.Membership.EmailService">
+            <summary>
+            Exposes method for sending messages to users using email.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.EmailService.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.EmailService"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.EmailService.#ctor(CMS.Core.IEventLogService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.EmailService"/> class.
+            </summary>
+            <param name="eventLogService">The event log service.</param>
+        </member>
+        <member name="M:Kentico.Membership.EmailService.SendAsync(Microsoft.AspNet.Identity.IdentityMessage)">
+            <summary>
+            Sends the given message (email).
+            </summary>
+            <param name="message">Message.</param>
+        </member>
+        <member name="M:Kentico.Membership.EmailService.CreateEmailMessage(Microsoft.AspNet.Identity.IdentityMessage)">
+            <summary>
+            Creates new instance of <see cref="T:CMS.EmailEngine.EmailMessage"/> from the
+            instance of <see cref="T:Microsoft.AspNet.Identity.IdentityMessage"/>.
+            </summary>
+            <param name="message">Instance of <see cref="T:Microsoft.AspNet.Identity.IdentityMessage"/>.</param>
+        </member>
+        <member name="T:Kentico.Membership.KenticoSignInManager">
+            <summary>
+            Manages sign in operations for users.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoSignInManager.#ctor(Kentico.Membership.KenticoUserManager,Microsoft.Owin.Security.IAuthenticationManager)">
+            <summary>
+            Manages sign in operations for users.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoSignInManager.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Kentico.Membership.KenticoSignInManager},Microsoft.Owin.IOwinContext)">
+            <summary>
+            Factory method that creates the <see cref="T:Kentico.Membership.KenticoSignInManager"/> instance.
+            </summary>
+            <param name="options">Identity factory options.</param>
+            <param name="context">OWIN context.</param>
+        </member>
+        <member name="T:Kentico.Membership.SignInManager">
+            <summary>
+            Manages sign in operations for users.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.SignInManager.#ctor(Kentico.Membership.UserManager,Microsoft.Owin.Security.IAuthenticationManager)">
+            <summary>
+            Manages sign in operations for users.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.SignInManager.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Kentico.Membership.SignInManager},Microsoft.Owin.IOwinContext)">
+            <summary>
+            Factory method that creates the <see cref="T:Kentico.Membership.SignInManager"/> instance.
+            </summary>
+            <param name="options">Identity factory options.</param>
+            <param name="context">OWIN context.</param>
+        </member>
+        <member name="T:Kentico.Membership.KenticoSignInManager`1">
+            <summary>
+            Manages sign in operations for users.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoSignInManager`1.#ctor(Kentico.Membership.KenticoUserManager{`0},Microsoft.Owin.Security.IAuthenticationManager)">
+            <summary>
+            Creates the instance of <see cref="T:Kentico.Membership.KenticoSignInManager`1"/>.
+            </summary>
+            <param name="userManager">User manager.</param>
+            <param name="authenticationManager">Authentication manager.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoSignInManager`1.Create(Microsoft.AspNet.Identity.Owin.IdentityFactoryOptions{Kentico.Membership.KenticoSignInManager{`0}},Microsoft.Owin.IOwinContext)">
+            <summary>
+            Factory method that creates the <see cref="T:Kentico.Membership.KenticoSignInManager`1"/> instance.
+            </summary>
+            <param name="options">Identity factory options.</param>
+            <param name="context">OWIN context.</param>
+        </member>
+        <member name="T:Kentico.Membership.KenticoUserManager">
+            <summary>
+            Exposes user related API which will automatically save changes to the <see cref="T:Kentico.Membership.KenticoUserStore"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager.#ctor(Microsoft.AspNet.Identity.IUserStore{Kentico.Membership.User,System.Int32})">
+            <summary>
+            Creates a new instance of <see cref="T:Kentico.Membership.KenticoUserManager"/>.
+            </summary>
+            <param name="store">User store.</param>
+        </member>
+        <member name="T:Kentico.Membership.UserManager">
+            <summary>
+            Exposes user related API which will automatically save changes to the <see cref="T:Kentico.Membership.UserStore"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.UserManager.#ctor(Microsoft.AspNet.Identity.IUserStore{Kentico.Membership.User,System.Int32})">
+            <summary>
+            Creates a new instance of <see cref="T:Kentico.Membership.UserManager"/>.
+            </summary>
+            <param name="store">User store.</param>
+        </member>
+        <member name="T:Kentico.Membership.KenticoUserManager`1">
+            <summary>
+            Exposes user related API which will automatically save changes to the <see cref="T:Kentico.Membership.KenticoUserStore`1"/>.
+            </summary>
+        </member>
+        <member name="F:Kentico.Membership.KenticoUserManager`1.passwordHasher">
+            <summary>
+            Hasher used to create and verify users password hash.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager`1.#ctor(Microsoft.AspNet.Identity.IUserStore{`0,System.Int32})">
+            <summary>
+            Creates a new instance of <see cref="T:Kentico.Membership.KenticoUserManager`1"/>.
+            </summary>
+            <param name="store">User store.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager`1.Initialize``1(Owin.IAppBuilder,``0)">
+            <summary>
+            Factory method that creates the user manager with <see cref="T:Kentico.Membership.KenticoUserStore`1"/>.
+            </summary>
+            <param name="app">Application builder.</param>
+            <param name="manager">Manager to be initialized.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager`1.UpdatePassword(Microsoft.AspNet.Identity.IUserPasswordStore{`0,System.Int32},`0,System.String)">
+            <summary>
+            Validates and updates the user password.
+            </summary>
+            <param name="passwordStore">Unused implementation of UserPasswordStore.</param>
+            <param name="user">User.</param>
+            <param name="newPassword">New password in plain text format.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager`1.VerifyPasswordAsync(Microsoft.AspNet.Identity.IUserPasswordStore{`0,System.Int32},`0,System.String)">
+            <summary>
+            Verifies the user password.
+            </summary>
+            <param name="store">Unused implementation of UserPasswordStore.</param>
+            <param name="user">User.</param>
+            <param name="password">Password in plain text format.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager`1.GenerateEmailConfirmationTokenAsync(System.Int32)">
+            <summary>
+            Gets the email confirmation token for the registered user.
+            </summary>
+            <param name="userId">User ID</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserManager`1.UpdateSecurityStampInternal(`0)">
+            <summary>
+            Updates the security stamp if the store supports it.
+            </summary>
+            <param name="user">User whose stamp should be updated.</param>
+        </member>
+        <member name="T:Kentico.Membership.Role">
+            <summary>
+            Application identity role.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.Role.#ctor(CMS.Membership.RoleInfo)">
+            <summary>
+            Creates a new instance of <see cref="T:Kentico.Membership.Role"/> based on <see cref="T:CMS.Membership.RoleInfo"/>.
+            </summary>
+            <param name="roleInfo">Role info (CMS entity).</param>
+        </member>
+        <member name="M:Kentico.Membership.Role.#ctor">
+            <summary>
+            Creates empty role.
+            </summary>
+        </member>
+        <member name="T:Kentico.Membership.KenticoRoleStore">
+            <summary>
+            Identity role store implementation.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoRoleStore.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.KenticoRoleStore"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoRoleStore.FindByIdAsync(System.Int32)">
+            <summary>
+            Returns instance of <see cref="T:Kentico.Membership.Role"/>.
+            </summary>
+            <param name="roleId">ID of the role.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoRoleStore.FindByNameAsync(System.String)">
+            <summary>
+            Returns instance of <see cref="T:Kentico.Membership.Role"/>.
+            </summary>
+            <param name="roleName">Name of role.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoRoleStore.CreateAsync(Kentico.Membership.Role)">
+            <summary>
+            Stores <see cref="T:Kentico.Membership.Role"/> in the database.
+            </summary>
+            <param name="role">Role.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoRoleStore.DeleteAsync(Kentico.Membership.Role)">
+            <summary>
+            Deletes <see cref="T:Kentico.Membership.Role"/> from the database.
+            </summary>
+            <param name="role">Role.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoRoleStore.UpdateAsync(Kentico.Membership.Role)">
+            <summary>
+            Updates <see cref="T:Kentico.Membership.Role"/> in the database.
+            </summary>
+            <param name="role">Role.</param>
+        </member>
+        <member name="T:Kentico.Membership.RoleStore">
+            <summary>
+            Identity role store implementation.
+            </summary>
+        </member>
+        <member name="T:Kentico.Membership.KenticoUserStore">
+            <summary>
+            Implements basic user management operations.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore.#ctor(System.String)">
+            <summary>
+            Creates store to manage users for given site.
+            </summary>
+            <param name="siteName">Site name that represents <see cref="T:CMS.SiteProvider.SiteInfo"/> for which users are managed.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore.#ctor(System.String,CMS.Membership.IUserInfoProvider,CMS.Membership.IUserRoleInfoProvider,CMS.Membership.IExternalLoginInfoProvider)">
+            <summary>
+            Creates store to manage users for given site.
+            </summary>
+            <param name="siteName">Site name that represents <see cref="T:CMS.SiteProvider.SiteInfo"/> for which users are managed.</param>
+            <param name="userInfoProvider">Provider for <see cref="T:CMS.Membership.UserInfo"/> management.</param>
+            <param name="userRoleInfoProvider">Provider for <see cref="T:CMS.Membership.UserRoleInfo"/> management.</param>
+            <param name="externalLoginInfoProvider">Provider for <see cref="T:CMS.Membership.ExternalLoginInfo"/> management.</param>
+        </member>
+        <member name="T:Kentico.Membership.UserStore">
+            <summary>
+            Implements basic user management operations.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.UserStore.#ctor(System.String)">
+            <summary>
+            Creates store to manage users for given site.
+            </summary>
+            <param name="siteName">Site name that represents <see cref="T:CMS.SiteProvider.SiteInfo"/> for which users are managed.</param>
+        </member>
+        <member name="T:Kentico.Membership.KenticoUserStore`1">
+            <summary>
+            Implements basic user management operations.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.#ctor(System.String)">
+            <summary>
+            Creates store to manage users for given site.
+            </summary>
+            <param name="siteName">Site name that represents <see cref="T:CMS.SiteProvider.SiteInfo"/> for which users are managed.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.#ctor(System.String,CMS.Membership.IUserInfoProvider,CMS.Membership.IUserRoleInfoProvider,CMS.Membership.IExternalLoginInfoProvider)">
+            <summary>
+            Creates store to manage users for given site.
+            </summary>
+            <param name="siteName">Site name that represents <see cref="T:CMS.SiteProvider.SiteInfo"/> for which users are managed.</param>
+            <param name="userInfoProvider">Provider for <see cref="T:CMS.Membership.UserInfo"/> management.</param>
+            <param name="userRoleInfoProvider">Provider for <see cref="T:CMS.Membership.UserRoleInfo"/> management.</param>
+            <param name="externalLoginInfoProvider">Provider for <see cref="T:CMS.Membership.ExternalLoginInfo"/> management.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.CreateAsync(`0)">
+            <summary>
+            Inserts new user to the database.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.DeleteAsync(`0)">
+            <summary>
+            Deletes the user.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.FindByIdAsync(System.Int32)">
+            <summary>
+            Finds the user by user's UserId.
+            </summary>
+            <param name="userId">UserId.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.FindByNameAsync(System.String)">
+            <summary>
+            Finds the user by user's username.
+            </summary>
+            <param name="userName">Username.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.UpdateAsync(`0)">
+            <summary>
+            Updates a user.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetPasswordHashAsync(`0)">
+            <summary>
+            Gets the password hash for the user.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.HasPasswordAsync(`0)">
+            <summary>
+            Returns true if the user has the password set.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetPasswordHashAsync(`0,System.String)">
+            <summary>
+            Sets the password hash for the user.
+            </summary>
+            <param name="user">User.</param>
+            <param name="passwordHash">Password hash.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetAccessFailedCountAsync(`0)">
+            <summary>
+            Returns the current number of failed access attempts.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetLockoutEnabledAsync(`0)">
+            <summary>
+            Returns whether the user can be locked out.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetLockoutEndDateAsync(`0)">
+            <summary>
+            Returns the DateTimeOffset that represents the end of the user's lockout, any time
+            in the past should be considered not locked out.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.IncrementAccessFailedCountAsync(`0)">
+            <summary>
+            Used to record when an attempt to access the user has failed.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.ResetAccessFailedCountAsync(`0)">
+            <summary>
+            Used to reset the access failed count, typically after the account is successfully accessed.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetLockoutEnabledAsync(`0,System.Boolean)">
+            <summary>
+            Sets whether the user can be locked out.
+            </summary>
+            <param name="user">User.</param>
+            <param name="enabled">Whether the user can be locked out.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetLockoutEndDateAsync(`0,System.DateTimeOffset)">
+            <summary>
+            Locks a user out until the specified end date (set to a past date, to unlock a user).
+            </summary>
+            <param name="user">User.</param>
+            <param name="lockoutEnd">DateTimeOffset that represents the end of a user's lockout.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetTwoFactorEnabledAsync(`0)">
+            <summary>
+            Returns whether two factor authentication is enabled for the user.
+            </summary>
+            <param name="user">User.</param>
+            <remarks>Not enabled in current implementation.</remarks>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetTwoFactorEnabledAsync(`0,System.Boolean)">
+            <summary>
+            Sets whether two factor authentication is enabled for the user.
+            </summary>
+            <param name="user">User.</param>
+            <param name="enabled">Whether users should go through two-factor authentication.</param>
+            <remarks>Not used in current implementation.</remarks>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetRolesAsync(`0)">
+            <summary>
+            Returns all role names for the given user.
+            </summary>
+            <param name="user">User entity.</param>
+            <returns>List of role names.</returns>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.IsInRoleAsync(`0,System.String)">
+            <summary>
+            Checks whether user is in role with given role name.
+            </summary>
+            <param name="user">User entity.</param>
+            <param name="roleName">Role name.</param>
+            <returns>True if user is in role, false otherwise.</returns>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.RemoveFromRoleAsync(`0,System.String)">
+            <summary>
+            Removes user from <see cref="T:Kentico.Membership.Role"/>.
+            </summary>
+            <param name="user">User entity.</param>
+            <param name="roleName">Role name.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.AddToRoleAsync(`0,System.String)">
+            <summary>
+            Adds user to <see cref="T:Kentico.Membership.Role"/>.
+            </summary>
+            <param name="user">User entity.</param>
+            <param name="roleName">Role name.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetEmailAsync(`0,System.String)">
+            <summary>
+            Sets the user email.
+            </summary>
+            <param name="user">User.</param>
+            <param name="email">Email.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetEmailAsync(`0)">
+            <summary>
+            Gets the user email.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetEmailConfirmedAsync(`0)">
+            <summary>
+            Returns true if the user email is confirmed.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetEmailConfirmedAsync(`0,System.Boolean)">
+            <summary>
+            Enables user if her email was confirmed.
+            </summary>
+            <param name="user">User.</param>
+            <param name="confirmed">Indicates if the user email is confirmed.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.FindByEmailAsync(System.String)">
+            <summary>
+            Returns the user associated with the given email.
+            </summary>
+            <param name="email">Email.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.AddLoginAsync(`0,Microsoft.AspNet.Identity.UserLoginInfo)">
+            <summary>
+            Adds external login to user.
+            </summary>
+            <param name="user">User.</param>
+            <param name="login">External login information.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.RemoveLoginAsync(`0,Microsoft.AspNet.Identity.UserLoginInfo)">
+            <summary>
+            Removes external login to user.
+            </summary>
+            <param name="user">User.</param>
+            <param name="login">External login information.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetLoginsAsync(`0)">
+            <summary>
+            Returns all external logins of user.
+            </summary>
+            <param name="user">User.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.FindAsync(Microsoft.AspNet.Identity.UserLoginInfo)">
+            <summary>
+            Returns user based on given external login.
+            </summary>
+            <param name="login">External login information.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.SetSecurityStampAsync(`0,System.String)">
+            <summary>
+            Sets user's security stamp.
+            </summary>
+            <param name="user">User to which stamp should be assigned.</param>
+            <param name="stamp">Stamp to be assigned.</param>
+        </member>
+        <member name="M:Kentico.Membership.KenticoUserStore`1.GetSecurityStampAsync(`0)">
+            <summary>
+            Returns user's security stamp.
+            </summary>
+            <param name="user">User whose stamp should be returned.</param>
+        </member>
+        <member name="T:Kentico.Membership.User">
+            <summary>
+            Representation of user identity.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.User.#ctor(CMS.Membership.UserInfo)">
+            <summary>
+            Creates new user from <see cref="T:CMS.Membership.UserInfo"/>.
+            </summary>
+            <param name="userInfo">User info (CMS entity).</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userInfo"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.User.#ctor">
+            <summary>
+            Creates empty user.
+            </summary>
+        </member>
+        <member name="T:Kentico.Membership.Internal.MembershipEvents">
+            <summary>
+            Membership events.
+            </summary>
+        </member>
+        <member name="F:Kentico.Membership.Internal.MembershipEvents.RegistrationCompleted">
+            <summary>
+            Fires when registration of the user is completed.
+            </summary>
+        </member>
+        <member name="T:Kentico.Membership.Internal.RegistrationCompletedEventArgs">
+            <summary>
+            Event arguments used for <see cref="F:Kentico.Membership.Internal.MembershipEvents.RegistrationCompleted"/> event.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.Internal.RegistrationCompletedEventArgs.User">
+            <summary>
+            Returns an <see cref="T:CMS.Membership.UserInfo" /> of the user who completed the registration process.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.Internal.RegistrationCompletedEventArgs.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:Kentico.Membership.Internal.RegistrationCompletedEventArgs"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.Internal.RegistrationCompletedEventArgs.#ctor(CMS.Membership.UserInfo)">
+            <summary>
+            Initializes a new instance of <see cref="T:Kentico.Membership.Internal.RegistrationCompletedEventArgs"/> with given <paramref name="user"/>.
+            </summary>
+            <param name="user">Registered user.</param>
+        </member>
+        <member name="T:Kentico.Membership.Internal.RegistrationCompletedHandler">
+            <summary>
+            Represents a handler that handles the user registration event.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.Internal.RegistrationCompletedHandler.StartEvent(CMS.Membership.UserInfo)">
+            <summary>
+            Initiates the event handling.
+            </summary>
+            <param name="userInfo"><see cref="T:CMS.Membership.UserInfo" /> representing registered user.</param>
+        </member>
+        <member name="T:Kentico.Membership.Internal.RegistrationHelper">
+            <summary>
+            Encapsulates helper methods for user registration.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.Internal.RegistrationHelper.RegisterUser(CMS.Membership.UserInfo)">
+            <summary>
+            Registers a new user.
+            </summary>
+            <param name="user">User to be registered.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="user"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="user"/> already exists. Method is to be used only for creating a new user.</exception>
+            <remarks>Rises <see cref="F:Kentico.Membership.Internal.MembershipEvents.RegistrationCompleted"/> event when registration proccess has been completed and user is <see cref="P:CMS.Membership.UserInfo.Enabled"/>.</remarks>
+        </member>
+        <member name="M:Kentico.Membership.Internal.RegistrationHelper.RegisterUserInternal(CMS.Membership.UserInfo)">
+            <summary>
+            Registers a new user.
+            </summary>
+            <param name="user">User to be registered.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="user"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="user"/> already exists. Method is to be used only for creating a new user.</exception>
+            <remarks>Rises <see cref="F:Kentico.Membership.Internal.MembershipEvents.RegistrationCompleted"/> event when registration proccess has been completed and user is <see cref="P:CMS.Membership.UserInfo.Enabled"/>.</remarks>
+        </member>
+        <member name="T:Kentico.Membership.ApplicationRole">
+            <summary>
+            Application identity role.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationRole.DisplayName">
+            <summary>
+            Role display name.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRole.#ctor(CMS.Membership.RoleInfo)">
+            <summary>
+            Creates a new instance of <see cref="T:Kentico.Membership.ApplicationRole"/> based on <see cref="T:CMS.Membership.RoleInfo"/>.
+            </summary>
+            <param name="roleInfo">Role info (CMS entity).</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="roleInfo"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRole.#ctor">
+            <summary>
+            Creates empty role.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRole.MapFromRoleInfo(CMS.Membership.RoleInfo)">
+            <summary>
+            Maps <see cref="T:CMS.Membership.RoleInfo"/> properties to the <see cref="T:Kentico.Membership.ApplicationRole"/> instance.
+            </summary>
+            <param name="source">Source object.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRole.MapToRoleInfo(CMS.Membership.RoleInfo)">
+            <summary>
+            Maps <see cref="T:Kentico.Membership.ApplicationRole"/> properties to the <see cref="T:CMS.Membership.RoleInfo"/> instance.
+            </summary>
+            <param name="target">Target object.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is null.</exception>
+        </member>
+        <member name="T:Kentico.Membership.ApplicationUser">
+            <summary>
+            Representation of application user identity.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.FirstName">
+            <summary>
+            First name.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.LastName">
+            <summary>
+            Last name.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.FullName">
+            <summary>
+            Full name.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.Enabled">
+            <summary>
+            Indicates if the user is enabled.
+            This represents the lockout notion in ASP.NET Identity.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.WaitingForApproval">
+            <summary>
+            Together with <see cref="P:Kentico.Membership.ApplicationUser.Enabled"/> indicates whether the user needs to wait 
+            for administrator's approval before logging in.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.GUID">
+            <summary>
+            Guid.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.Roles">
+            <summary>
+            Roles of the user.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUser.IsExternal">
+            <summary>
+            Indicates that the user can be logged in only through an external authentication provider.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUser.#ctor(CMS.Membership.UserInfo)">
+            <summary>
+            Creates new user from <see cref="T:CMS.Membership.UserInfo"/>.
+            </summary>
+            <param name="userInfo">User info (CMS entity).</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userInfo"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUser.#ctor">
+            <summary>
+            Creates empty user.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUser.MapFromUserInfo(CMS.Membership.UserInfo)">
+            <summary>
+            Maps <see cref="T:CMS.Membership.UserInfo" /> properties to the <see cref="T:Kentico.Membership.ApplicationUser" /> instance.
+            </summary>
+            <param name="source">Source object.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="source"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUser.MapToUserInfo(CMS.Membership.UserInfo)">
+            <summary>
+            Maps <see cref="T:Kentico.Membership.ApplicationUser" /> properties to the <see cref="T:CMS.Membership.UserInfo" /> instance.
+            </summary>
+            <param name="target">Target object.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="target"/> is null.</exception>
+        </member>
+        <member name="T:Kentico.Membership.IMessageService">
+            <summary>
+            Defines contract to send an email.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.IMessageService.SendEmailAsync(System.String,System.String,System.String)">
+            <summary>
+            Sends the given message (email).
+            </summary>
+            <param name="destination">The destination email address.</param>
+            <param name="subject">The subject of the email.</param>
+            <param name="body">Message body of the email.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task"/> object that represents an asynchronous operation of sending the email.
+            </returns>
+        </member>
+        <member name="T:Kentico.Membership.ApplicationUserManager`1">
+            <summary>
+            Exposes user related API which will automatically save changes to the <see cref="T:Kentico.Membership.ApplicationUserManager`1"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserManager`1.#ctor(Microsoft.AspNetCore.Identity.IUserStore{`0},Microsoft.Extensions.Options.IOptionsSnapshot{Microsoft.AspNetCore.Identity.IdentityOptions},Microsoft.AspNetCore.Identity.IPasswordHasher{`0},System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Identity.IUserValidator{`0}},System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Identity.IPasswordValidator{`0}},Microsoft.AspNetCore.Identity.ILookupNormalizer,Microsoft.AspNetCore.Identity.IdentityErrorDescriber,System.IServiceProvider,Microsoft.Extensions.Logging.ILogger{Microsoft.AspNetCore.Identity.UserManager{`0}})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.ApplicationUserManager`1"/> class.
+            </summary>
+            <param name="store">The persistence store the manager will operate over.</param>
+            <param name="optionsAccessor">The accessor used to access the <see cref="T:Microsoft.AspNetCore.Identity.IdentityOptions" />.</param>
+            <param name="passwordHasher">The password hashing implementation to use when saving passwords.</param>
+            <param name="userValidators">A collection of <see cref="T:Microsoft.AspNetCore.Identity.IUserValidator`1" /> to validate users against.</param>
+            <param name="passwordValidators">A collection of <see cref="T:Microsoft.AspNetCore.Identity.IPasswordValidator`1" /> to validate passwords against.</param>
+            <param name="keyNormalizer">The <see cref="T:Microsoft.AspNetCore.Identity.ILookupNormalizer" /> to use when generating index keys for users.</param>
+            <param name="errors">The <see cref="T:Microsoft.AspNetCore.Identity.IdentityErrorDescriber" /> used to provider error messages.</param>
+            <param name="services">The <see cref="T:System.IServiceProvider" /> used to resolve services.</param>
+            <param name="logger">The logger used to log messages, warnings and errors.</param>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserManager`1.GenerateEmailConfirmationTokenAsync(`0)">
+            <summary>
+            Generates an email confirmation token for the specified user.
+            </summary>
+            <param name="user">The user to generate an email confirmation token for.</param>
+        </member>
+        <member name="T:Kentico.Membership.MessageService">
+            <summary>
+            Exposes method for sending messages to users using email.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.MessageService.#ctor(CMS.Core.IEventLogService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.MessageService"/> class.
+            </summary>
+            <param name="eventLogService">The event log service.</param>
+        </member>
+        <member name="M:Kentico.Membership.MessageService.SendEmailAsync(System.String,System.String,System.String)">
+            <summary>
+            Sends the given message (email).
+            </summary>
+            <param name="destination">The destination email address.</param>
+            <param name="subject">The subject of the email.</param>
+            <param name="body">Message body of the email.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task"/> object that represents an asynchronous operation of sending the email.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.MessageService.CreateEmailMessage(System.String,System.String,System.String)">
+            <summary>
+            Creates new instance of <see cref="T:CMS.EmailEngine.EmailMessage" />
+            </summary>
+            <param name="destination">The destination email address.</param>
+            <param name="subject">The subject of the email.</param>
+            <param name="body">Message body of the email.</param>
+        </member>
+        <member name="T:Kentico.Membership.PasswordHasher`1">
+            <summary>
+            Provides methods for hashing passwords.
+            </summary>
+            <typeparam name="TUser">The type of the user.</typeparam>
+            <seealso cref="T:Microsoft.AspNetCore.Identity.IPasswordHasher`1"/>
+        </member>
+        <member name="M:Kentico.Membership.PasswordHasher`1.HashPassword(`0,System.String)">
+            <summary>
+            Returns a hashed representation of the supplied <paramref name="password"/> for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose password is to be hashed.</param>
+            <param name="password">The password to hash.</param>
+            <returns>
+            A hashed representation of the supplied <paramref name="password"/> for the specified <paramref name="user"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/></exception>
+        </member>
+        <member name="M:Kentico.Membership.PasswordHasher`1.VerifyHashedPassword(`0,System.String,System.String)">
+            <summary>
+            Returns a <see cref="T:Microsoft.AspNetCore.Identity.PasswordVerificationResult"/> indicating the result of a password hash comparison.
+            <para>
+            This verification will fail also in the following cases:
+            <list type="bullet">
+            <item>User is not found in database.</item>
+            <item>User is public.</item>
+            <item>User is external.</item>
+            <item>User is a domain user.</item>
+            </list>
+            </para>
+            </summary>
+            <param name="user">The user whose password should be verified.</param>
+            <param name="hashedPassword">The hash value for a user's stored password.</param>
+            <param name="providedPassword">The password supplied for comparison.</param>
+            <returns>
+            A <see cref="T:Microsoft.AspNetCore.Identity.PasswordVerificationResult"/> indicating the result of a password hash comparison.
+            </returns>
+        </member>
+        <member name="T:Kentico.Membership.ApplicationRoleStore`1">
+            <summary>
+            Identity role store implementation.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.ApplicationRoleStore`1"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.CreateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new role in a store as an asynchronous operation.
+            </summary>
+            <param name="role">The role to create in the store.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the <see cref="T:Microsoft.AspNetCore.Identity.IdentityResult"/> of the asynchronous query.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="role"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.UpdateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Updates a role in a store as an asynchronous operation.
+            </summary>
+            <param name="role">The role to update in the store.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the <see cref="T:Microsoft.AspNetCore.Identity.IdentityResult"/> of the asynchronous query.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="role"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when role is not found.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.DeleteAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Deletes a role from the store as an asynchronous operation.
+            </summary>
+            <param name="role">The role to delete from the store.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that represents the <see cref="T:Microsoft.AspNetCore.Identity.IdentityResult"/> of the asynchronous query.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="role"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.GetRoleIdAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the ID for a role from the store as an asynchronous operation.
+            </summary>
+            <param name="role">The role whose ID should be returned.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that contains the ID of the role.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="role"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.GetRoleNameAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the name of a role from the store as an asynchronous operation.
+            </summary>
+            <param name="role">The role whose name should be returned.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that contains the name of the role.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="role"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.SetRoleNameAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the name of a role in the store as an asynchronous operation.
+            </summary>
+            <param name="role">The role whose name should be set.</param>
+            <param name="roleName">The name of the role.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="role"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.GetNormalizedRoleNameAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Get a role's normalized name as an asynchronous operation.
+            </summary>
+            <param name="role">The role whose normalized name should be retrieved.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that contains the name of the role.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.SetNormalizedRoleNameAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Set a role's normalized name as an asynchronous operation.
+            </summary>
+            <param name="role">The role whose normalized name should be set.</param>
+            <param name="normalizedName">The normalized name to set</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.FindByIdAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Finds the role who has the specified ID as an asynchronous operation.
+            </summary>
+            <param name="roleId">The role ID to look for.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that result of the look up.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.FindByIdAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Finds the role who has the specified ID as an asynchronous operation.
+            </summary>
+            <param name="roleId">The role ID to look for.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that result of the look up.
+            </returns>
+            <exception cref="T:System.ArgumentException"><paramref name="roleId"/> is empty or non integer.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.FindByNameAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Finds the role who has the specified normalized name as an asynchronous operation.
+            </summary>
+            <param name="normalizedRoleName">The normalized role name to look for.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            A <see cref="T:System.Threading.Tasks.Task`1"/> that result of the look up.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.Dispose">
+            <summary>
+            Performs tasks to dispose the role store.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.Dispose(System.Boolean)">
+            <summary>
+            Disposes the role store.
+            </summary>
+            <param name="disposing">Describes whether or not should the managed resources be disposed.</param>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationRoleStore`1.ThrowIfDisposed">
+            <summary>
+            Throws if this class has been disposed.
+            </summary>
+        </member>
+        <member name="T:Kentico.Membership.ApplicationUserStore`1">
+            <summary>
+            Implements basic user management operations.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.ApplicationUserStore`1.SiteID">
+            <summary>
+            Returns <see cref="P:CMS.SiteProvider.SiteInfo.SiteID"/> that belongs to <see cref="T:CMS.SiteProvider.SiteInfo"/> managed by <see cref="T:Kentico.Membership.ApplicationUserStore`1"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.#ctor(System.String,CMS.Membership.IUserInfoProvider,CMS.Membership.IUserRoleInfoProvider,CMS.Membership.IExternalLoginInfoProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.ApplicationUserStore`1"/> class.
+            </summary>
+            <param name="siteName">Site name.</param>
+            <param name="userInfoProvider">Provider for <see cref="T:CMS.Membership.UserInfo"/> management.</param>
+            <param name="userRoleInfoProvider">Provider for <see cref="T:CMS.Membership.UserRoleInfo"/> management.</param>
+            <param name="externalLoginInfoProvider">Provider for <see cref="T:CMS.Membership.ExternalLoginInfo"/> management.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="userInfoProvider"/>, <paramref name="userRoleInfoProvider"/> or <paramref name="externalLoginInfoProvider"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="siteName"/> is null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.#ctor(CMS.Base.ISiteService,CMS.Membership.IUserInfoProvider,CMS.Membership.IUserRoleInfoProvider,CMS.Membership.IExternalLoginInfoProvider)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Membership.ApplicationUserStore`1"/> to manage users for the current site.
+            </summary>
+            <param name="siteService">The site service.</param>
+            <param name="userInfoProvider">Provider for <see cref="T:CMS.Membership.UserInfo"/> management.</param>
+            <param name="userRoleInfoProvider">Provider for <see cref="T:CMS.Membership.UserRoleInfo"/> management.</param>
+            <param name="externalLoginInfoProvider">Provider for <see cref="T:CMS.Membership.ExternalLoginInfo"/> management.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="siteService"/>, <paramref name="userInfoProvider"/>, <paramref name="userRoleInfoProvider"/> or <paramref name="externalLoginInfoProvider"/> is null.</exception>
+            <exception cref="T:System.ArgumentException">Current site name is null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.ValidateSiteName(System.String)">
+            <summary>
+            Validates if <paramref name="siteName"/> is valid; otherwise throws exception.
+            </summary>
+            <param name="siteName">Site name.</param>
+            <exception cref="T:System.ArgumentException"><paramref name="siteName"/> is null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetUserIdAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the user identifier for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose identifier should be retrieved.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the identifier for the specified <paramref name="user"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetUserNameAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the user name for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose name should be retrieved.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the name for the specified <paramref name="user"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetUserNameAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the given <paramref name="userName"/> for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose name should be set.</param>
+            <param name="userName">The user name to set.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetNormalizedUserNameAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the normalized user name for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose normalized name should be retrieved.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the normalized user name for the specified <paramref name="user"/>.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetNormalizedUserNameAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the given normalized name for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose name should be set.</param>
+            <param name="normalizedName">The normalized name to set.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.CreateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Creates the specified <paramref name="user"/> in the user store.
+            </summary>
+            <param name="user">The user to create.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the <see cref="T:Microsoft.AspNetCore.Identity.IdentityResult"/> of the creation operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.UpdateAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Updates the specified <paramref name="user"/> in the user store.
+            </summary>
+            <param name="user">The user to update.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the <see cref="T:Microsoft.AspNetCore.Identity.IdentityResult"/> of the update operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when user is not found.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.DeleteAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Deletes the user.
+            </summary>
+            <param name="user">User.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the <see cref="T:Microsoft.AspNetCore.Identity.IdentityResult"/> of the update operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.FindByIdAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Finds and returns a user, if any, who has the specified <paramref name="userId"/>.
+            </summary>
+            <param name="userId">The user ID to search for.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="userId"/> if it exists.
+            </returns>
+            <exception cref="T:System.ArgumentException"><paramref name="userId"/> is empty or non integer.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.FindByIdAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Finds and returns a user, if any, who has the specified <paramref name="userId"/>.
+            </summary>
+            <param name="userId">The user identifier.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="userId"/> if it exists.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.FindByNameAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Finds and returns a user, if any, who has the specified normalized user name.
+            </summary>
+            <param name="normalizedUserName">The normalized user name to search for.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the user matching the specified <paramref name="normalizedUserName"/> if it exists.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetPasswordHashAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the password hash for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose password hash to set.</param>
+            <param name="passwordHash">The password hash to set.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetPasswordHashAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the password hash for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose password hash to retrieve.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, returning the password hash for the specified <paramref name="user"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when the user is not found.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.HasPasswordAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets a flag indicating whether the specified <paramref name="user"/> has a password.
+            </summary>
+            <param name="user">The user to return a flag for, indicating whether they have a password or not.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, returning <c>true</c> if the specified <paramref name="user"/> has a password;
+            otherwise <c>false</c>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when the user is not found.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetRolesAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets a list of role names the specified <paramref name="user"/> belongs to.
+            </summary>
+            <param name="user">The user whose role names to retrieve.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing a list of role names.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.IsInRoleAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns a flag indicating whether the specified <paramref name="user"/> is a member of the given named role.
+            </summary>
+            <param name="user">The user whose role membership should be checked.</param>
+            <param name="roleName">The name of the role to be checked.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing a flag indicating whether the specified <paramref name="user"/> is
+            a member of the named role.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.RemoveFromRoleAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Remove the specified <paramref name="user"/> from the named role.
+            </summary>
+            <param name="user">The user to remove the named role from.</param>
+            <param name="roleName">The name of the role to remove.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="roleName"/> is null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.AddToRoleAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Add the specified <paramref name="user"/> to the named role.
+            </summary>
+            <param name="user">The user to add to the named role.</param>
+            <param name="roleName">The name of the role to add the user to.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="roleName"/> is null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetUsersInRoleAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns a list of Users who are members of the named role.
+            </summary>
+            <param name="roleName">The name of the role whose membership should be returned.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing a list of users who are in the named role.
+            </returns>
+            <exception cref="T:System.ArgumentException"><paramref name="roleName"/> null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetEmailAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the <paramref name="email"/> address for a <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose email should be set.</param>
+            <param name="email">The email to set.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when user is not found.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetEmailAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets the email address for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose email should be returned.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> containing the results of the asynchronous operation, the email address for the specified <paramref name="user"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetEmailConfirmedAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Gets a flag indicating whether the email address for the specified <paramref name="user"/> has been verified, true if the email address is verified otherwise
+            false.
+            </summary>
+            <param name="user">The user whose email confirmation status should be returned.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> containing the results of the asynchronous operation, a flag indicating whether the email address for the specified <paramref name="user"/>
+            has been confirmed or not.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetEmailConfirmedAsync(`0,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Sets the flag indicating whether the specified <paramref name="user"/>'s email address has been confirmed or not.
+            </summary>
+            <param name="user">The user whose email confirmation status should be set.</param>
+            <param name="confirmed">A flag indicating if the email address has been confirmed, true if the address is confirmed otherwise false.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.FindByEmailAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Gets the user, if any, associated with the specified, normalized email address.
+            </summary>
+            <param name="normalizedEmail">The normalized email address to return the user for.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> containing the results of the asynchronous lookup operation, the user if any associated with the specified normalized email address.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetNormalizedEmailAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Returns the normalized email for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose email address to retrieve.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> containing the results of the asynchronous lookup operation, the normalized email address if any associated with the specified user.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetNormalizedEmailAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the normalized email for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose email address to set.</param>
+            <param name="normalizedEmail">The normalized email to set for the specified <paramref name="user"/>.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.AddLoginAsync(`0,Microsoft.AspNetCore.Identity.UserLoginInfo,System.Threading.CancellationToken)">
+            <summary>
+            Adds an external <see cref="T:Microsoft.AspNetCore.Identity.UserLoginInfo"/> to the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user to add the login to.</param>
+            <param name="login">The external <see cref="T:Microsoft.AspNetCore.Identity.UserLoginInfo"/> to add to the specified <paramref name="user"/>.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> or <paramref name="login"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.RemoveLoginAsync(`0,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to remove the provided login information from the specified <paramref name="user"/>.
+            and returns a flag indicating whether the removal succeed or not.
+            </summary>
+            <param name="user">The user to remove the login information from.</param>
+            <param name="loginProvider">The login provide whose information should be removed.</param>
+            <param name="providerKey">The key given by the external login provider for the specified user.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetLoginsAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the associated logins for the specified <param ref="user"/>.
+            </summary>
+            <param name="user">The user whose associated logins to retrieve.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> for the asynchronous operation, containing a list of <see cref="T:Microsoft.AspNetCore.Identity.UserLoginInfo"/> for the specified <paramref name="user"/>, if any.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.FindByLoginAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves the user associated with the specified login provider and login provider key.
+            </summary>
+            <param name="loginProvider">The login provider who provided the <paramref name="providerKey"/>.</param>
+            <param name="providerKey">The key provided by the <paramref name="loginProvider"/> to identify a user.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> for the asynchronous operation, containing the user, if any which matched the specified login provider and key.
+            </returns>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetSecurityStampAsync(`0,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Sets the provided security <paramref name="stamp"/> for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose security stamp should be set.</param>
+            <param name="stamp">The security stamp to set.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task"/> that represents the asynchronous operation.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.SetSecurityStampInternal(`0,System.String)">
+            <summary>
+            Sets the provided security <paramref name="stamp"/> for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose security stamp should be set.</param>
+            <param name="stamp">The security stamp to set.</param>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.GetSecurityStampAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Get the security stamp for the specified <paramref name="user"/>.
+            </summary>
+            <param name="user">The user whose security stamp should be set.</param>
+            <param name="cancellationToken">The <see cref="T:System.Threading.CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
+            <returns>
+            The <see cref="T:System.Threading.Tasks.Task`1"/> that represents the asynchronous operation, containing the security stamp for the specified <paramref name="user"/>.
+            </returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="user"/> is null.</exception>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.Dispose">
+            <summary>
+            Performs tasks to dispose the user store.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.Dispose(System.Boolean)">
+            <summary>
+            Disposes the user store.
+            </summary>
+            <param name="disposing">Describes whether or not should the managed resources be disposed.</param>
+        </member>
+        <member name="M:Kentico.Membership.ApplicationUserStore`1.ThrowIfDisposed">
+            <summary>
+            Throws if this class has been disposed.
+            </summary>
+        </member>
+        <member name="T:Kentico.Membership.EmailConfirmationExtensionDefinition">
+            <summary>
+            Describes configuration for registration email confirmation extension.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.EmailConfirmationExtensionDefinition.BeforeConfirmationSentAction">
+            <summary>
+            This action is invoked before the registration confirmation email is sent.
+            </summary>
+            <remarks>Gets ID of registered user as parameter.</remarks>
+        </member>
+        <member name="P:Kentico.Membership.EmailConfirmationExtensionDefinition.EmailConfirmedAction">
+            <summary>
+            This action is invoked when the registration email is successfully confirmed.
+            </summary>
+            <remarks>Gets ID of registered user as parameter.</remarks>
+        </member>
+        <member name="M:Kentico.Membership.EmailConfirmationExtensionDefinition.#ctor(System.Action{System.Int32},System.Action{System.Int32})">
+            <summary>
+            Initializes a new instance of <see cref="T:Kentico.Membership.EmailConfirmationExtensionDefinition"/>.
+            </summary>
+            <param name="beforeConfirmationSentAction">Action which is invoked before the registration confirmation email is sent</param>
+            <param name="emailConfirmedAction">Action which is invoked when the registration email is successfully confirmed</param>
+        </member>
+        <member name="T:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister">
+            <summary>
+            Register for actions extending registration email confirmation feature.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister.Instance">
+            <summary>
+            Gets the <see cref="T:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister"/> instance.
+            </summary>
+        </member>
+        <member name="P:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister.Items">
+            <summary>
+            Gets all registered instances of <see cref="T:Kentico.Membership.EmailConfirmationExtensionDefinition"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister.#ctor">
+            <summary>
+            Creates a new instance of <see cref="T:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Membership.EmailConfirmationExtensionDefinitionRegister.Register(Kentico.Membership.EmailConfirmationExtensionDefinition)">
+            <summary>
+            Registers given <paramref name="definition"/> to the system.
+            </summary>
+            <param name="definition">Instance of <see cref="T:Kentico.Membership.EmailConfirmationExtensionDefinition"/> to be registered.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when null <paramref name="definition"/> is provided.</exception>
+        </member>
+    </members>
+</doc>

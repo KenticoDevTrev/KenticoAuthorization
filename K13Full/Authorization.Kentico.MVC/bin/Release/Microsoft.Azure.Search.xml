@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Azure.Search</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Azure.Search.IndexesGetClientExtensions">
+            <summary>
+            Defines an extension method for obtaining a pre-configured SearchIndexClient from the Indexes property
+            of a SearchServiceClient.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.IndexesGetClientExtensions.GetClient(Microsoft.Azure.Search.IIndexesOperations,System.String)">
+            <summary>
+            Creates a new index client for querying and managing documents in a given index.
+            </summary>
+            <param name="operations">The operation group for indexes of the Search service.</param>
+            <param name="indexName">The name of the index.</param>
+            <returns>A new <c cref="T:Microsoft.Azure.Search.SearchIndexClient">SearchIndexClient</c> instance.</returns>
+            <remarks>
+            The new client is configured with full read-write access to the index. If you are only planning to use the
+            client for query operations, we recommend directly creating a 
+            <c cref="T:Microsoft.Azure.Search.SearchIndexClient">SearchIndexClient</c> instance instead.
+            </remarks>
+        </member>
+    </members>
+</doc>

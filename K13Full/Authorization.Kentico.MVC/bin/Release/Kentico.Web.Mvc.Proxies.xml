@@ -1,0 +1,1335 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Kentico.Web.Mvc.Proxies</name>
+    </assembly>
+    <members>
+        <member name="T:Kentico.Web.Mvc.Internal.AuthorizeProxyAttribute">
+            <summary>
+            Proxy class for platform agnostic authorization attributes.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.AuthorizeProxyAttribute.AuthorizeCore(System.Web.HttpContextBase)">
+            <summary>
+            Provides an entry point for custom authorization checks.
+            </summary>
+            <param name="httpContext">The HTTP context, which encapsulates all HTTP-specific information about an individual HTTP request.</param>
+            <returns>
+            true if the user is authorized; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.AuthorizeProxyAttribute.HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext)">
+            <summary>
+            Processes HTTP requests that fail authorization.
+            </summary>
+            <param name="filterContext">Encapsulates the information for using <see cref="T:System.Web.Mvc.AuthorizeAttribute" />. The <paramref name="filterContext" /> object contains the controller, HTTP context, request context, action result, and route data.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.AuthorizeProxyAttribute.IsAuthorized(CMS.Base.Internal.IHttpContext)">
+            <summary>
+            Verifies that the user is authorized.
+            </summary>
+            <returns>True if verification succeeded, otherwise false.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.AuthorizeProxyAttribute.GetUnathorizedMessage">
+            <summary>
+            Returns message which is sent to the unauthorized requests.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.Internal.IDataProtectionProvider">
+            <summary>
+            Describes a factory for creating <see cref="T:Kentico.Web.Mvc.Internal.IDataProtectorProxy"/> instances.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.IDataProtectionProvider.CreateProtector(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates an <see cref="T:Kentico.Web.Mvc.Internal.IDataProtectorProxy"/> given a list of purposes.
+            </summary>
+            <param name="purposes">The list of purposes which contribute to the purpose chain. This list must
+            contain at least one element, and it may not contain null elements.</param>
+            <returns>An <see cref="T:Kentico.Web.Mvc.Internal.IDataProtectorProxy"/> tied to the provided purpose chain.</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.Internal.IDataProtectorProxy">
+            <summary>
+            An interface that can provide data protection services.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.IDataProtectorProxy.Protect(System.Byte[])">
+            <summary>
+            Cryptographically protects a piece of plaintext data.
+            </summary>
+            <param name="userData">The plaintext data to protect.</param>
+            <returns>The protected form of the plaintext data.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.IDataProtectorProxy.Unprotect(System.Byte[])">
+            <summary>
+            Cryptographically unprotects a piece of protected data.
+            </summary>
+            <param name="protectedData">The protected data to unprotect.</param>
+            <returns>The plaintext form of the protected data.</returns>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">
+            Thrown if the protected data is invalid or malformed.
+            </exception>
+        </member>
+        <member name="T:Kentico.Web.Mvc.Internal.MachineKeyDataProtectionProvider">
+            <summary>
+            Implementation of <see cref="T:Kentico.Web.Mvc.Internal.IDataProtectionProvider"/> that creates <see cref="T:Kentico.Web.Mvc.Internal.MachineKeyDataProtector"/> instances.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.MachineKeyDataProtectionProvider.CreateProtector(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates an <see cref="T:Kentico.Web.Mvc.Internal.MachineKeyDataProtector"/> given a list of purposes.
+            </summary>
+            <param name="purposes">The list of purposes which contribute to the purpose chain. This list must
+            contain at least one element, and it may not contain null elements.</param>
+        </member>
+        <member name="T:Kentico.Web.Mvc.Internal.MachineKeyDataProtector">
+            <summary>
+            Implementation of <see cref="T:Kentico.Web.Mvc.Internal.IDataProtectorProxy"/> that uses <see cref="T:System.Web.Security.MachineKey"/>
+            infrastructure to protect and unprotect data.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.MachineKeyDataProtector.#ctor(System.String[])">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.Internal.MachineKeyDataProtector"/> with given <paramref name="purposes"/>.
+            </summary>
+            <exception cref="T:System.ArgumentNullException"><paramref name="purposes"/> is null.</exception>
+            <exception cref="T:System.ArgumentException"><paramref name="purposes"/> is empty.</exception>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.MachineKeyDataProtector.Protect(System.Byte[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.Internal.MachineKeyDataProtector.Unprotect(System.Byte[])">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ExceptionContextProxy">
+            <summary>
+            Full Framework implementation of a exception context proxy.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ExceptionContextProxy.OriginalViewModel">
+            <inheritdoc/>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ExceptionContextProxy.RouteDataValues">
+            <inheritdoc/>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ExceptionContextProxy.Exception">
+            <inheritdoc/>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ExceptionContextProxy.ExceptionHandled">
+            <inheritdoc cref="P:System.Web.Mvc.ExceptionContext.ExceptionHandled"/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ExceptionContextProxy.#ctor(System.Web.Mvc.ExceptionContext)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.ExceptionContextProxy"/> class.
+            The <paramref name="target"/> object is used to proxy calls to.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ExceptionContextProxy.SetResponseStatusCode(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ExceptionContextProxy.CreateViewDataDictionary(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ExceptionFilterProxyAttribute">
+            <summary>
+            Attribute handling errors.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ExceptionFilterProxyAttribute.OnException(System.Web.Mvc.ExceptionContext)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ExceptionFilterProxyAttribute.HandleException(Kentico.Web.Mvc.IExceptionContextProxy)">
+            <summary>
+            Handles the exception and returns result which will be sent in the response.
+            </summary>
+            <returns>Result which will be passed as a response.</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IExceptionContextProxy">
+            <summary>
+            Interface acts as a proxy for Full Framework and .Net Core exception contexts.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IExceptionContextProxy.Exception">
+            <summary>
+            Gets the <see cref="T:System.Exception"/> caught while executing the action.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IExceptionContextProxy.ExceptionHandled">
+            <summary>
+            Gets and sets the exception handled flag on the underlying context.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IExceptionContextProxy.OriginalViewModel">
+            <summary>
+            Gets the model the view was being rendered with. Null in case an exception was caught during action execution.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IExceptionContextProxy.RouteDataValues">
+            <summary>
+            Gets the values produced by routes on the current routing path.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IExceptionContextProxy.CreateViewDataDictionary(System.Object)">
+            <summary>
+            Returns new instance of the <see cref="T:Kentico.Web.Mvc.IViewDataDictionaryProxy"/> class initialized using the specified <paramref name="model"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IExceptionContextProxy.SetResponseStatusCode(System.Int32)">
+            <summary>
+            Sets the HTTP response code of the underlying context.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.HtmlContentProxy">
+            <summary>
+            Represents a proxy object for <see cref="T:System.Web.IHtmlString"/>.
+            </summary>
+        </member>
+        <member name="F:Kentico.Web.Mvc.HtmlContentProxy.Empty">
+            <summary>
+            An <see cref="T:Kentico.Web.Mvc.HtmlContentProxy"/> instance for <see cref="F:System.String.Empty"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxy.#ctor(System.String)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.HtmlContentProxy"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxy.#ctor(System.Web.IHtmlString)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.HtmlContentProxy"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxy.ToHtmlString">
+            <summary>
+            Returns an HTML-encoded string.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.HtmlContentProxyBuilder">
+            <summary>
+            An <see cref="T:Kentico.Web.Mvc.IHtmlContentProxyBuilder"/> implementation using an in memory list.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlContentProxyBuilder.Items">
+            <summary>
+            Gets lazily initialized items collection.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlContentProxyBuilder.HasItems">
+            <summary>
+            Gets the value indicating if items collection was initialized.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlContentProxyBuilder.Count">
+            <summary>
+            Gets the number of elements in the <see cref="T:Kentico.Web.Mvc.HtmlContentProxyBuilder"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxyBuilder.#ctor">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.HtmlContentProxyBuilder"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxyBuilder.#ctor(System.Int32)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.HtmlContentProxyBuilder"/> class with the given initial capacity. 
+            </summary>
+            <param name="capacity">The initial capacity of the backing store.</param>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than 0.</exception>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxyBuilder.Append(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxyBuilder.AppendHtml(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxyBuilder.AppendHtml(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlContentProxyBuilder.System#Web#IHtmlString#ToHtmlString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IHtmlContentProxy">
+            <summary>
+            Defines an object that could be used by Razor view to print content.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlContentProxy.ToString">
+            <summary>
+            Returns string representing HTML content inside the object.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IHtmlContentProxyBuilder">
+            <summary>
+            A builder for HTML content.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlContentProxyBuilder.Append(System.String)">
+            <summary>
+            Appends a <see cref="T:System.String"/> value. The value is treated as unencoded as-provided, and will be HTML
+            encoded before writing to output.
+            </summary>
+            <param name="unencoded">The <see cref="T:System.String"/> to append.</param>
+            <returns>The <see cref="T:Kentico.Web.Mvc.IHtmlContentProxyBuilder"/>.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlContentProxyBuilder.AppendHtml(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <summary>
+            Appends an <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> instance.
+            </summary>
+            <param name="content">The <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> to append.</param>
+            <returns>The <see cref="T:Kentico.Web.Mvc.IHtmlContentProxyBuilder"/>.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlContentProxyBuilder.AppendHtml(System.String)">
+            <summary>
+            Appends an HTML encoded <see cref="T:System.String"/> value. The value is treated as HTML encoded as-provided, and
+            no further encoding will be performed.
+            </summary>
+            <param name="encoded">The HTML encoded <see cref="T:System.String"/> to append.</param>
+            <returns>The <see cref="T:Kentico.Web.Mvc.IHtmlContentProxyBuilder"/>.</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.TestAPI.HtmlContentProxyTestExtensionMethods">
+            <summary>
+            Contains extension methods to ease testing of methods returning <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/>.
+            </summary>
+            <remarks>Methods in this class are to be used only in tests.</remarks>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TestAPI.HtmlContentProxyTestExtensionMethods.GetStringContent(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <summary>
+            Returns underlying string of a <paramref name="htmlContentProxy"/> for asserting in tests.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.HtmlHelperExtensionPoint">
+            <summary>
+            Extension point for HTML Helper.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlHelperExtensionPoint.Target">
+            <summary>
+            Gets framework agnostic HTML helper.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperExtensionPoint.#ctor(Kentico.Web.Mvc.IHtmlHelperProxy)">
+            <summary>
+            Initializes a new instance of a <see cref="T:Kentico.Web.Mvc.HtmlHelperExtensionPoint"/>.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.HtmlHelperExtensions">
+            <summary>
+            Provides methods to render HTML fragments.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperExtensions.ToProxy(System.Web.Mvc.HtmlHelper)">
+            <summary>
+            Returns an object that provides methods to render HTML fragments.
+            </summary>
+            <param name="target">An instance of the <see cref="T:System.Web.Mvc.HtmlHelper"/> class.</param>
+            <returns>An object that provides methods to render HTML fragments.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperExtensions.Kentico(Kentico.Web.Mvc.IHtmlHelperProxy)">
+            <summary>
+            Returns an object that provides methods to render HTML fragments.
+            </summary>
+            <param name="target">Proxy to the HTML helper object.</param>
+            <returns>Extension point for methods</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.HtmlHelperProxy">
+            <summary>
+            Kentico HTML Helper.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlHelperProxy.Target">
+            <summary>
+            TEMPORARY!
+            Gets the underlying HtmlHelper.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlHelperProxy.ViewContext">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.HtmlHelperProxy.ViewData">
+            <inheritdoc />
+            <remarks>
+            Contrary to .NET Full Framework implementation, this property return the
+            <see cref="P:System.Web.Mvc.ViewContext.ViewData"/> instead of <see cref="P:System.Web.Mvc.HtmlHelper.ViewData"/>.
+            </remarks>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.#ctor(System.Web.Mvc.HtmlHelper)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.HtmlHelperProxy"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.BeginForm(System.String,System.String,System.Object,System.Boolean,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Writes an opening &lt;form&gt; tag to the response. When the user submits the form, the request will be processed by the route target.
+            </summary>
+            <param name="actionName">The name of the action method.</param>
+            <param name="controllerName">The name of the controller.</param>
+            <param name="routeValues">An object that contains the parameters for a route.</param>
+            <param name="usePostMethod">When true the HTTP method POST is used for processing the form. If false then GET is used.</param>
+            <param name="htmlAttributes">An object that contains the HTML attributes to set for the element.</param>
+            <returns>An opening &lt;form&gt; tag.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.BeginRouteForm(System.String,System.Object,System.Boolean,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Writes an opening &lt;form&gt; tag to the response. When the user submits the form, the request will be processed by the route target.
+            </summary>
+            <param name="routeName">The name of the route to use to obtain the form-post URL.</param>
+            <param name="routeValues">An object that contains the parameters for a route.</param>
+            <param name="usePostMethod">When true the HTTP method POST is used for processing the form. If false then GET is used.</param>
+            <param name="htmlAttributes">An object that contains the HTML attributes to set for the element.</param>
+            <returns>An opening &lt;form&gt; tag.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.Encode(System.String)">
+            <summary>
+            Converts the specified string to an HTML-encoded string.
+            </summary>
+            <param name="value">The string to encode.</param>
+            <returns>The HTML-encoded string.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.GenerateIdFromName(System.String)">
+            <summary>
+            Returns an HTML element Id for the specified expression <paramref name="fullName"/>.
+            </summary>
+            <param name="fullName">Fully-qualified expression name, ignoring the current model. Must not be <c>null</c>.</param>
+            <returns>A <see cref="T:System.String"/> containing the element Id.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.Label(System.String,System.String,System.Object)">
+            <summary>
+            Returns a &lt;label&gt; element for the specified <paramref name="expression"/>.
+            </summary>
+            <param name="expression">Expression name, relative to the current model.</param>
+            <param name="labelText">The inner text of the element.</param>
+            <param name="htmlAttributes">
+            An <see cref="T:System.Object"/> that contains the HTML attributes for the element. Alternatively, an
+            <see cref="T:System.Collections.Generic.IDictionary`2"/> instance containing the HTML attributes.
+            </param>
+            <returns>A new <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> containing the &lt;label&gt; element.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.Partial(System.String,System.Object)">
+            <summary>
+            Renders the specified partial view as an HTML-encoded string.
+            </summary>
+            <param name="partialViewName">The name of the partial view.</param>
+            <param name="model">The model for the partial view.</param>
+            <returns>The partial view that is rendered as an HTML-encoded string.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.Partial(System.String,System.Object,Kentico.Web.Mvc.IViewDataDictionaryProxy)">
+            <summary>
+            Renders the specified partial view as an HTML-encoded string.
+            </summary>
+            <param name="partialViewName">The name of the partial view.</param>
+            <param name="model">The model for the partial view.</param>
+            <param name="viewData">The view data dictionary for the partial view.</param>
+            <returns>The partial view that is rendered as an HTML-encoded string.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.PartialWithNewHtmlPrefix(System.String,System.Object,System.String)">
+            <summary>
+            Renders the specified partial view as an HTML-encoded string while creating a copy of current view data and sets new HTML field prefix.
+            </summary>
+            <param name="partialViewName">The name of the partial view.</param>
+            <param name="model">The model of the partial view.</param>
+            <param name="htmlfieldPrefix">HTML field prefix for a new view data created out of the current ones.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.SystemAntiForgeryToken">
+            <summary>
+            Generates a hidden form field (anti-forgery token) that is validated when the form is submitted.
+            </summary>
+            <returns>The generated form field (anti-forgery token).</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.ValidationMessage(System.String,System.Object,System.String)">
+            <summary>
+            Displays a validation message if an error exists for the specified entry in the
+            <see cref="T:System.Web.Mvc.ModelStateDictionary"/> object.
+            </summary>
+            <param name="modelName">The name of the entry being validated.</param>
+            <param name="htmlAttributes">
+            An <see cref="T:System.Object"/> that contains the HTML attributes for the tag element.
+            Alternatively, an <see cref="T:System.Collections.Generic.IDictionary`2"/> instance containing the HTML attributes.
+            </param>
+            <param name="tag">The tag to be set for the wrapping HTML element of the validation message.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.HtmlHelperProxy.RenderAction(System.String,System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IHtmlHelperProxy">
+            <summary>
+            Defines an object that provides methods to render Kentico HTML controls in a view.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IHtmlHelperProxy.Target">
+            <summary>
+            TEMPORARY!
+            Gets the underlying HtmlHelper.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IHtmlHelperProxy.ViewContext">
+            <summary>
+            Gets the context information about the view.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IHtmlHelperProxy.ViewData">
+            <summary>
+            Gets the current view data out of the <see cref="P:Kentico.Web.Mvc.IHtmlHelperProxy.ViewContext"/>.
+            </summary>
+            <remarks>
+            .NET Core ViewData property is always the ViewDataDictionary from ViewContext thus both implementation do it the same way.
+            </remarks>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.BeginForm(System.String,System.String,System.Object,System.Boolean,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Writes an opening &lt;form&gt; tag to the response. When the user submits the form, the request will be processed by the route target.
+            </summary>
+            <param name="actionName">The name of the action method.</param>
+            <param name="controllerName">The name of the controller.</param>
+            <param name="routeValues">An object that contains the parameters for a route.</param>
+            <param name="usePostMethod">When true the HTTP method POST is used for processing the form. If false then GET is used.</param>
+            <param name="htmlAttributes">An object that contains the HTML attributes to set for the element.</param>
+            <returns>An opening &lt;form&gt; tag.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.BeginRouteForm(System.String,System.Object,System.Boolean,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Writes an opening &lt;form&gt; tag to the response. When the user submits the form, the request will be processed by the route target.
+            </summary>
+            <param name="routeName">The name of the route to use to obtain the form-post URL.</param>
+            <param name="routeValues">An object that contains the parameters for a route.</param>
+            <param name="usePostMethod">When true the HTTP method POST is used for processing the form. If false then GET is used.</param>
+            <param name="htmlAttributes">An object that contains the HTML attributes to set for the element.</param>
+            <returns>An opening &lt;form&gt; tag.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.Encode(System.String)">
+            <summary>
+            Converts the specified <see cref="T:System.String"/> to an HTML-encoded <see cref="T:System.String"/>.
+            </summary>
+            <param name="value">The <see cref="T:System.String"/> to encode.</param>
+            <returns>The HTML-encoded <see cref="T:System.String"/>.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.GenerateIdFromName(System.String)">
+            <summary>
+            Returns an HTML element Id for the specified expression <paramref name="fullName"/>.
+            </summary>
+            <param name="fullName">Fully-qualified expression name, ignoring the current model. Must not be <c>null</c>.</param>
+            <returns>A <see cref="T:System.String"/> containing the element Id.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.Label(System.String,System.String,System.Object)">
+            <summary>
+            Returns a &lt;label&gt; element for the specified <paramref name="expression"/>.
+            </summary>
+            <param name="expression">Expression name, relative to the current model.</param>
+            <param name="labelText">The inner text of the element.</param>
+            <param name="htmlAttributes">
+            An <see cref="T:System.Object"/> that contains the HTML attributes for the element. Alternatively, an
+            <see cref="T:System.Collections.Generic.IDictionary`2"/> instance containing the HTML attributes.
+            </param>
+            <returns>A new <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> containing the &lt;label&gt; element.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.SystemAntiForgeryToken">
+            <summary>
+            Generates a hidden form field (anti-forgery token) that is validated when the form is submitted.
+            </summary>
+            <returns>The generated form field (anti-forgery token).</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.ValidationMessage(System.String,System.Object,System.String)">
+            <summary>
+            Displays a validation message if an error exists for the specified entry in the 'ModelStateDictonary' object.
+            </summary>
+            <param name="modelName">The name of the entry being validated.</param>
+            <param name="htmlAttributes">
+            An <see cref="T:System.Object"/> that contains the HTML attributes for the tag element.
+            Alternatively, an <see cref="T:System.Collections.Generic.IDictionary`2"/> instance containing the HTML attributes.
+            </param>
+            <param name="tag">The tag to be set for the wrapping HTML element of the validation message.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.RenderAction(System.String,System.String,System.Object)">
+            <summary>
+            Invokes the specified child action method using the specified parameters and controller name and renders the result inline in the parent view.
+            </summary>
+            <param name="action">The name of the child action method to invoke.</param>
+            <param name="controller">The name of the controller that contains the action method.</param>
+            <param name="routeValues">
+            A dictionary that contains the parameters for a route. You can use routeValues to provide
+            the parameters that are bound to the action method parameters.
+            The routeValues parameter is merged with the original route values and overrides them.
+            </param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.Partial(System.String,System.Object)">
+            <summary>
+            Renders the specified partial view as an HTML-encoded string.
+            </summary>
+            <param name="partialViewName">The name of the partial view.</param>
+            <param name="model">The model for the partial view.</param>
+            <returns>The partial view that is rendered as an HTML-encoded string.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.Partial(System.String,System.Object,Kentico.Web.Mvc.IViewDataDictionaryProxy)">
+            <summary>
+            Renders the specified partial view as an HTML-encoded string.
+            </summary>
+            <param name="partialViewName">The name of the partial view.</param>
+            <param name="model">The model for the partial view.</param>
+            <param name="viewData">The view data dictionary for the partial view.</param>
+            <returns>The partial view that is rendered as an HTML-encoded string.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IHtmlHelperProxy.PartialWithNewHtmlPrefix(System.String,System.Object,System.String)">
+            <summary>
+            Renders the specified partial view as an HTML-encoded string while creating a copy of current view data and sets new HTML field prefix.
+            </summary>
+            <param name="partialViewName">The name of the partial view.</param>
+            <param name="model">The model of the partial view.</param>
+            <param name="htmlfieldPrefix">HTML field prefix for a new view data created out of the current ones.</param>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IMvcFormProxy">
+            <summary>
+            An interface that can provide data protection services.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IMvcFormProxy.AddEndFormContent(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <summary>
+            Adds HTML content before the enclosing form tag.
+            </summary>
+            <param name="htmlContent">HTML content to be added before the enclosing form tag.</param>
+        </member>
+        <member name="T:Kentico.Web.Mvc.MvcFormProxy">
+            <summary>
+            Represents a wrapper object around <see cref="T:System.Web.Mvc.Html.MvcForm"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.MvcFormProxy.#ctor(System.Web.Mvc.Html.MvcForm,System.Web.Mvc.ViewContext)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.MvcFormProxy"/> class.
+            </summary>
+            <param name="mvcForm">MVC Form created by HTML Helper.</param>
+            <param name="viewContext">View context used by the HTML Helper that created the <paramref name="mvcForm"/>.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.MvcFormProxy.AddEndFormContent(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <summary>
+            Adds a <paramref name="htmlContent"/> item to be rendered when form is ended.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.MvcFormProxy.Dispose">
+            <summary>
+            Releases all resources used by the current instance of the <see cref="T:Kentico.Web.Mvc.MvcFormProxy"/> class.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ControllerExtensions">
+            <summary>
+            Contains extension methods for <see cref="T:System.Web.Mvc.Controller"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ControllerExtensions.CreateModelBinderProxy(System.Web.Mvc.Controller)">
+            <summary>
+            Creates a helper for model binding in the request this controller is handling.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IModelBinderProxy">
+            <summary>
+            Interface represents framework agnostic abstraction of a model binder proxy.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IModelBinderProxy.BindFormCollection(System.Object,System.String,System.Predicate{System.String})">
+            <summary>
+            Binds data from current request's form to an instance of a <paramref name="model"/>.
+            </summary>
+            <param name="model">Instance to which bind data from form collection.</param>
+            <param name="prefix">Prefix used in the form's inputs.</param>
+            <param name="propertyNameFilter">Predicate, based on property names, to filter which properties are to be bound.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IModelBinderProxy.Validate(System.Object,System.String)">
+            <summary>
+            Validates the <paramref name="model"/> and adds error into the model state.
+            </summary>
+            <param name="model">Object to validate.</param>
+            <param name="prefix">Keys added into the model state are prefixed with this value and a single '.' character.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IModelBinderProxy.AddModelStateError(System.String,System.String)">
+            <summary>
+            Adds <paramref name="key"/> with <paramref name="errorMessage"/> to the model state.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IModelBinderProxy.RemoveFromModelState(System.String)">
+            <summary>
+            Removes entries with specified <paramref name="prefix"/> prefix from the model state. 
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IModelBinderProxy.IsModelValid(System.String)">
+            <summary>
+            Checks whether model with specified <paramref name="prefix"/> is valid.
+            </summary>
+            <returns>True when model is valid, otherwise false.</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ModelBinderProxy">
+            <summary>
+            Class represents the Full Framework version of model binder proxy which forwards model binding to underlying binder.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ModelBinderProxy.#ctor(System.Web.Mvc.ControllerContext)">
+            <summary>
+            Creates a new instance of the <see cref="T:Kentico.Web.Mvc.ModelBinderProxy"/> class.
+            </summary>
+            <param name="controllerContext">Context of a controller to access model state and be able to provide model binding.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ModelBinderProxy.BindFormCollection(System.Object,System.String,System.Predicate{System.String})">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ModelBinderProxy.Validate(System.Object,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ModelBinderProxy.AddModelStateError(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ModelBinderProxy.RemoveFromModelState(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ModelBinderProxy.IsModelValid(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.RouteCollectionExtensions">
+            <summary>
+            Provides methods to add routes to Kentico HTTP handlers.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteCollectionExtensions.ToProxy(System.Web.Routing.RouteCollection)">
+            <summary>
+            Returns an object that provides methods to add routes to Kentico HTTP handlers.
+            </summary>
+            <param name="target">An instance of the <see cref="T:System.Web.Routing.RouteCollection"/> class.</param>
+            <returns>An object that provides methods to add routes to Kentico HTTP handlers.</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.RouteBuilderProxy">
+            <summary>
+            Defines an ASP.NET route builder for Kentico application.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteBuilderProxy.#ctor(System.Web.Routing.RouteCollection)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.RouteBuilderProxy"/> class.
+            </summary>
+            <param name="routes"></param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteBuilderProxy.MapRoute(System.String,System.String,System.Object,System.Object,System.String[])">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteBuilderProxy.MapActionResultRoute``1(System.String,System.Object,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteBuilderProxy.RouteExists(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteBuilderProxy.AddKenticoHttpHandlerRoutes">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IRouteBuilderProxy">
+            <summary>
+            Defines a contract for a route builder in Kentico application.
+            A route builder specifies the routes for Kentico application.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IRouteBuilderProxy.MapRoute(System.String,System.String,System.Object,System.Object,System.String[])">
+            <summary>
+            Maps the specified MVC route and sets default route values and constraints.
+            </summary>
+            <param name="name">The name of the route to map.</param>
+            <param name="url">The URL pattern for the route.</param>
+            <param name="defaults">An object that contains default route values.</param>
+            <param name="constraints">A set of expressions that specify values for the <paramref name="url"/> parameter.</param>
+            <param name="namespaces">A set of namespaces for the application.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IRouteBuilderProxy.MapActionResultRoute``1(System.String,System.Object,System.Object)">
+            <summary>
+            Maps the route to <typeparamref name="TService"/> and sets default route values and constraints.
+            </summary>
+            <param name="url">The URL pattern for the route.</param>
+            <param name="defaults">An object that contains default route values.</param>
+            <param name="constraints">A set of expressions that specify values for the <paramref name="url"/> parameter.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IRouteBuilderProxy.RouteExists(System.String)">
+            <summary>
+            Checks if the route with <paramref name="routeName"/> was already registered in current builder.
+            </summary>
+            <param name="routeName">The name of the route.</param>
+            <returns><c>true</c> if route is registered.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IRouteBuilderProxy.AddKenticoHttpHandlerRoutes">
+            <summary>
+            Adds routes to Kentico handlers.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.RouteBuilderExtensionPoint">
+            <summary>
+            Represents a point for extension methods to build routes for Kentico application.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.RouteBuilderExtensionPoint.Target">
+            <summary>
+            The underlying class that proxies method calls to route builder object of the framework.
+            <para>
+            This member is intended only to support Kentico infrastructure and is not supposed to be called directly.
+            </para>
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.RouteRegistration">
+            <summary>
+            Performs registration of system routes to route collection.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteRegistration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Kentico.Web.Mvc.RouteRegistration"/> class.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.RouteRegistration.Instance">
+            <summary>
+            Gets the current instance of the <see cref="T:Kentico.Web.Mvc.RouteRegistration"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteRegistration.Add(System.Action{Kentico.Web.Mvc.IRouteBuilderProxy})">
+            <summary>
+            <para>
+            Adds route registration to be executed on route builder supplied in <see cref="M:Kentico.Web.Mvc.RouteRegistration.Execute(Kentico.Web.Mvc.IRouteBuilderProxy)"/> call.
+            </para>
+            <para>
+            Route registrations are queued and performed on the route builder passed to the <see cref="M:Kentico.Web.Mvc.RouteRegistration.Execute(Kentico.Web.Mvc.IRouteBuilderProxy)"/> method, once the method is called.
+            After being executed, no additional route registrations can be added (i.e. route registration execution must not precede 'use feature' methods calls so that features
+            can add their specific routes).
+            </para>
+            </summary>
+            <param name="routeRegistration">Route registration to be executed on the route collection passed to <see cref="M:Kentico.Web.Mvc.RouteRegistration.Execute(Kentico.Web.Mvc.IRouteBuilderProxy)"/>, once it is called.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="routeRegistration"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">Thrown when <see cref="M:Kentico.Web.Mvc.RouteRegistration.Execute(Kentico.Web.Mvc.IRouteBuilderProxy)"/> has already been called.</exception>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteRegistration.Execute(Kentico.Web.Mvc.IRouteBuilderProxy)">
+            <summary>
+            <para>
+            Executes registration of routes collected via the <see cref="M:Kentico.Web.Mvc.RouteRegistration.Add(System.Action{Kentico.Web.Mvc.IRouteBuilderProxy})"/> method into <paramref name="routeBuilder"/>.
+            </para>
+            <para>
+            Once the registration executes, no more routes can be added.
+            </para>
+            </summary>
+            <param name="routeBuilder">Route builder to register routes into.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when <paramref name="routeBuilder"/> is null.</exception>
+        </member>
+        <member name="T:Kentico.Web.Mvc.TagBuilderProxy">
+            <summary>
+            Contains classes and properties that are used to create HTML elements.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.TagBuilderProxy.Attributes">
+            <summary>
+            Gets the collection of attributes.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.#ctor(System.String)">
+            <summary>
+            Creates a new tag that has the specified tag name.
+            </summary>
+            <param name="tagName">The tag name without the "&lt;", "/", or "&gt;" delimiters.</param>
+            <exception cref="T:System.ArgumentException">Thrown when <paramref name="tagName"/> is null or empty.</exception>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.AddCssClass(System.String)">
+            <summary>
+            Adds a CSS class to the list of CSS classes in the tag.
+            If there are already CSS classes on the tag then a space character and the new class will
+            be appended to the existing list.
+            </summary>
+            <param name="value">The CSS class name to add.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.AppendInnerText(System.String)">
+            <summary>
+            Appends a <see cref="T:System.String"/> value. The value is treated as unencoded as-provided, and will be HTML
+            encoded before writing to output.
+            </summary>
+            <param name="text">The string to HTML-encode.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.AppendInnerHtml(System.String)">
+            <summary>
+            Appends an HTML encoded <see cref="T:System.String"/> value. The value is treated as HTML encoded as-provided, and
+            no further encoding will be performed.
+            </summary>
+            <param name="encoded">The string to HTML-encode.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.AppendInnerHtml(Kentico.Web.Mvc.TagBuilderProxy)">
+            <summary>
+            Appends a <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> value as inner HTML content of this <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/>.
+            </summary>
+            <param name="innerTagBuilder">The <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> object to append as inner HTML content.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.AppendInnerHtml(System.Web.IHtmlString)">
+            <summary>
+            Appends a <see cref="T:System.Web.IHtmlString"/> value as inner HTML content of this <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/>.
+            </summary>
+            <param name="htmlString">The <see cref="T:System.Web.IHtmlString"/> object.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.MergeAttribute(System.String,System.String)">
+            <summary>
+            Adds a new attribute to the tag.
+            </summary>
+            <param name="key">The key for the attribute.</param>
+            <param name="value">The value of the attribute.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.MergeAttribute(System.String,System.String,System.Boolean)">
+            <summary>
+            Adds a new attribute or optionally replaces an existing attribute in the opening tag.
+            </summary>
+            <param name="key">The key for the attribute.</param>
+            <param name="value">The value of the attribute.</param>
+            <param name="replaceExisting">
+            <c>true</c> to replace an existing attribute if an attribute exists that has the
+            specified key value, or <c>false</c> to leave the original attribute unchanged.
+            </param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.MergeAttributes``2(System.Collections.Generic.IDictionary{``0,``1})">
+            <summary>
+            Adds new attributes to the tag.
+            </summary>
+            <typeparam name="TKey">The type of the key object.</typeparam>
+            <typeparam name="TValue">The type of the value object.</typeparam>
+            <param name="attributes">The collection of attributes to add.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.MergeAttributes``2(System.Collections.Generic.IDictionary{``0,``1},System.Boolean)">
+            <summary>
+            Adds new attributes or optionally replaces existing attributes in the tag.
+            </summary>
+            <typeparam name="TKey">The type of the key object.</typeparam>
+            <typeparam name="TValue">The type of the value object.</typeparam>
+            <param name="attributes">The collection of attributes to add or replace.</param>
+            <param name="replaceExisting">
+            For each attribute in attributes, <c>true</c> to replace the attribute if an attribute
+            already exists that has the same key, or <c>false</c> to leave the original attribute
+            unchanged.
+            </param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.RenderStartTag">
+            <summary>
+            Returns an <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> that renders the start tag.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.RenderEndTag">
+            <summary>
+            Returns an <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> that renders the end tag.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.RenderSelfClosingTag">
+            <summary>
+            Returns an <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/> that renders the end tag.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.ToHtmlContent">
+            <summary>
+            Converts current <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> into object implementing <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/>
+            interface.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilderProxy.ToHtmlContent(System.Web.Mvc.TagRenderMode)">
+            <summary>
+            Converts current <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> into object implementing <see cref="T:Kentico.Web.Mvc.IHtmlContentProxy"/>
+            interface.
+            </summary>
+            <param name="tagRenderMode">The render mode.</param>
+        </member>
+        <member name="T:Kentico.Web.Mvc.TagBuilders">
+            <summary>
+            Helper methods to instantiate <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> for most common usages.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilders.Script">
+            <summary>
+            Creates new instance <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> for &lt;script&gt; tag.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilders.ScriptSrc(System.String)">
+            <summary>
+            Creates new instance <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> for &lt;script src=...&gt; tag.
+            </summary>
+            <param name="scriptPath">Path to the script.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilders.ScriptInline(System.String)">
+            <summary>
+            Creates new instance <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> for &lt;script&gt; tag with inline content.
+            </summary>
+            <param name="scriptContent">Inline javascript content.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.TagBuilders.StylesheetLink(System.String)">
+            <summary>
+            Creates new instance <see cref="T:Kentico.Web.Mvc.TagBuilderProxy"/> for style sheet tag with <paramref name="path"/>.
+            </summary>
+            <param name="path">Path to the style sheet.</param>
+        </member>
+        <member name="T:Kentico.Web.Mvc.UrlHelperExtensions">
+            <summary>
+            Provides methods to build URLs to Kentico content.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperExtensions.ToProxy(System.Web.Mvc.UrlHelper)">
+            <summary>
+            Returns an object that provides methods to build URLs by calling an URL building of the framework.
+            <para>
+            This method is intended only to support Kentico infrastructure and is not supposed to be called directly.
+            </para>
+            </summary>
+            <param name="target">An instance of the <see cref="T:System.Web.Mvc.UrlHelper"/> class to which the calls will be proxied.</param>
+            <returns>An object that proxies calls to methods to build URLs to an object provided by framework.</returns>
+            <remarks>The returned object builds URLs based on the context of the current request.</remarks>
+        </member>
+        <member name="T:Kentico.Web.Mvc.UrlHelperProxyExtensions">
+            <summary>
+            Contains additional methods for the <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/>.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxyExtensions.RouteUrl(Kentico.Web.Mvc.IUrlHelperProxy,System.String,System.Object)">
+            <summary>
+            Returns a string that contains a URL.
+            </summary>
+            <param name="urlHelper">The <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/>.</param>
+            <param name="routeName">The route name.</param>
+            <param name="routeValues">The route values. </param>>
+            <returns>A string that contains a URL.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxyExtensions.Action(Kentico.Web.Mvc.IUrlHelperProxy,System.String)">
+            <summary>
+            Returns a string that contains a URL.
+            </summary>
+            <param name="urlHelper">The <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/>.</param>
+            <param name="actionName">Name of the action to which the URL should be directed regarding the context of current controller.</param>
+        </member>
+        <member name="M:Kentico.Web.Mvc.RouteValueDictionaryHelper.Create(System.Object)">
+            <summary>
+            Creates proper <see cref="T:System.Web.Routing.RouteValueDictionary"/> out of <paramref name="routeValues"/>.
+            </summary>
+            <param name="routeValues">The route values.</param>
+        </member>
+        <member name="T:Kentico.Web.Mvc.UrlHelperProxy">
+            <summary>
+            Contains methods to build URLs to Kentico content.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.UrlHelperProxy.HttpContext">
+            <summary>
+            Gets the <see cref="T:System.Web.HttpContextBase"/> for the current request.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxy.#ctor(System.Web.Mvc.UrlHelper)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.UrlHelperProxy"/> class.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxy.Content(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxy.RouteUrl(System.String,System.String,System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxy.Action(System.String,System.String,System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Kentico.Web.Mvc.UrlHelperProxyFactory">
+            <summary>
+            A service for retrieving <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/> instances.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.UrlHelperProxyFactory.Create">
+            <summary>
+            Creates an <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/> for the request.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IUrlHelperProxy">
+            <summary>
+            Defines an object that provides methods to build URLs to Kentico content.
+            <para>
+            This interface is intended only to support Kentico infrastructure and is not supposed to be implemented.
+            </para>
+            </summary>
+            <remarks>Used only for internal Kentico purposes.</remarks>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IUrlHelperProxy.HttpContext">
+            <summary>
+            Gets the <see cref="T:System.Web.HttpContextBase"/> for the current request.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IUrlHelperProxy.Content(System.String)">
+            <summary>
+            Converts a virtual (relative, starting with ~/) path to an application absolute path.
+            </summary>
+            <param name="contentPath">The virtual path of the content.</param>
+            <returns>The application absolute path.</returns>
+            <remarks>
+            If the specified content path does not start with the tilde (~) character,
+            this method returns contentPath unchanged.
+            </remarks>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IUrlHelperProxy.RouteUrl(System.String,System.String,System.String,System.Object)">
+            <summary>
+            Returns a string that contains a URL.
+            </summary>
+            <param name="routeName">The route name.</param>
+            <param name="actionName">The action name.</param>
+            <param name="controllerName">The controller name.</param>
+            <param name="routeValues">The route values. The value can be of type
+            <see cref="T:System.Collections.Generic.IDictionary`2"/> or an object with public
+            properties as key-value pairs.</param>
+            <returns>A string that contains a URL.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IUrlHelperProxy.Action(System.String,System.String,System.Object)">
+            <summary>
+            Returns a string that contains a URL.
+            </summary>
+            <param name="actionName">The action name.</param>
+            <param name="controllerName">The controller name.</param>
+            <param name="routeValues">The route values. The value can be of type
+            <see cref="T:System.Collections.Generic.IDictionary`2"/> or an object with public
+            properties as key-value pairs.</param>
+            <returns>A string that contains a URL.</returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IUrlHelperProxyFactory">
+            <summary>
+            A factory for creating <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/> instances.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IUrlHelperProxyFactory.Create">
+            <summary>
+            Creates an <see cref="T:Kentico.Web.Mvc.IUrlHelperProxy"/> based on the current request context.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.UrlHelperExtensionPoint">
+            <summary>
+            Represents a point for extension methods to build URLs to Kentico content.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.UrlHelperExtensionPoint.Target">
+            <summary>
+            The underlying class that proxies method calls to URL helper object of the framework.
+            <para>
+            This member is intended only to support Kentico infrastructure and is not supposed to be called directly.
+            </para>
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.IViewContextProxy">
+            <summary>
+            Defines a contract for the object that encapsulates information that is related to rendering a view.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewContextProxy.ClientValidationEnabled">
+            <summary>
+            Gets or sets a value that indicates whether client-side validation is enabled.
+            </summary>
+            <value>
+            <c>true</c> if client-side validation is enabled; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewContextProxy.UnobtrusiveJavaScriptEnabled">
+            <summary>
+            Gets or sets a value that indicates whether unobtrusive JavaScript is enabled.
+            </summary>
+            <value>
+            <c>true</c> if unobtrusive JavaScript is enabled; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewContextProxy.ParentActionViewData">
+            <summary>
+            Gets the view data that is passed to the parent action method view.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewContextProxy.RouteDataValues">
+            <summary>
+            Gets the values produced by routes on the current routing path.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewContextProxy.ViewData">
+            <summary>
+            Gets the view data that is passed to the view.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IViewContextProxy.WriteHtmlContent(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <summary>
+            Writes the <paramref name="htmlContent"/> to current text output writer.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IViewContextProxy.WriteHtmlContent(System.String)">
+            <summary>
+            Writes raw value of <paramref name="encodedHtml"/> to current text output writer.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ViewContextProxy">
+            <summary>
+            A wrapper object over <see cref="T:System.Web.Mvc.ViewContext"/>
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewContextProxy.Target">
+            <summary>
+            Underlying <see cref="T:System.Web.Mvc.ViewContext"/> object.
+            </summary>
+            <remarks>'internal' access modifier is needed for testing purposes only.</remarks>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewContextProxy.ClientValidationEnabled">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewContextProxy.UnobtrusiveJavaScriptEnabled">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewContextProxy.ParentActionViewData">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewContextProxy.RouteDataValues">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewContextProxy.ViewData">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewContextProxy.#ctor(System.Web.Mvc.ViewContext)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.ViewContextProxy"/> class with <paramref name="target"/> as underlying object.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewContextProxy.WriteHtmlContent(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewContextProxy.WriteHtmlContent(Kentico.Web.Mvc.IHtmlContentProxy)">
+            <inheritdoc />
+        </member>
+        <member name="T:Kentico.Web.Mvc.IViewDataDictionaryProxy">
+            <summary>
+            Represents a contract for a container that is used to pass data between a controller and a view.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewDataDictionaryProxy.Target">
+            <summary>
+            Underlying <see cref="T:System.Web.Mvc.ViewDataDictionary"/> object.
+            </summary>
+            <remarks>
+            Used only for rendering partial views.
+            </remarks>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewDataDictionaryProxy.ModelState">
+            <summary>
+            Gets the state of the model.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.IViewDataDictionaryProxy.TemplateHtmlFieldPrefix">
+            <summary>
+            Gets or sets HTML field prefix for underlying template info.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IViewDataDictionaryProxy.TemplateGetFullHtmlFieldName(System.String)">
+            <summary>
+            Retrieves the fully qualified name (including a prefix) for a field using the specified HTML name attribute.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.IViewDataDictionaryProxy.CreateNew">
+            <summary>
+            Creates new instance of <see cref="T:Kentico.Web.Mvc.IViewDataDictionaryProxy"/> out of the current one.
+            This supplies for 'new ViewDataDictionary(source)'.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ViewDataDictionaryExtensionPoint">
+            <summary>
+            Extension point for a View data dictionary.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryExtensionPoint.Target">
+            <summary>
+            Gets framework agnostic view data dictionary.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryExtensionPoint.#ctor(Kentico.Web.Mvc.IViewDataDictionaryProxy)">
+            <summary>
+            Initializes a new instance of a <see cref="T:Kentico.Web.Mvc.ViewDataDictionaryExtensionPoint"/>.
+            </summary>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ViewDataDictionaryExtensions">
+            <summary>
+            Provides methods to access view data for Kentico content.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryExtensions.Kentico(Kentico.Web.Mvc.IViewDataDictionaryProxy)">
+            <summary>
+            Returns an object that provides methods to access view data for Kentico content.
+            </summary>
+            <param name="target">An instance of the <see cref="T:Kentico.Web.Mvc.IViewDataDictionaryProxy"/> class.</param>
+            <returns>
+            An object that provides methods to access view data for Kentico content
+            or <c>null</c> when <paramref name="target"/> is null.
+            </returns>
+        </member>
+        <member name="T:Kentico.Web.Mvc.ViewDataDictionaryProxy">
+            <summary>
+            A wrapper object over <see cref="T:System.Web.Mvc.ViewDataDictionary"/>.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.Target">
+            <summary>
+            Underlying <see cref="T:System.Web.Mvc.ViewDataDictionary"/> object.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.ModelState">
+            <summary>
+            Gets the state of the model.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.TemplateHtmlFieldPrefix">
+            <summary>
+            Gets or sets HTML field prefix for underlying template info.
+            </summary>
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.Item(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.Keys">
+            <inheritdoc />
+        </member>
+        <member name="P:Kentico.Web.Mvc.ViewDataDictionaryProxy.Values">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.#ctor(System.Web.Mvc.ViewDataDictionary)">
+            <summary>
+            Initializes new instance of <see cref="T:Kentico.Web.Mvc.ViewDataDictionaryProxy"/> with <paramref name="target"/> as underlying object.
+            </summary>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.TemplateGetFullHtmlFieldName(System.String)">
+            <summary>
+            Retrieves the fully qualified name (including a prefix) for a field using the specified HTML name attribute.
+            </summary>
+            <param name="partialFieldName">The value of the HTML name attribute.</param>
+            <returns>The prefixed name of the field.</returns>
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.Add(System.String,System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.Add(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.Contains(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.ContainsKey(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.CopyTo(System.Collections.Generic.KeyValuePair{System.String,System.Object}[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.Remove(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.Remove(System.Collections.Generic.KeyValuePair{System.String,System.Object})">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.TryGetValue(System.String,System.Object@)">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.System#Collections#Generic#IEnumerable{System#Collections#Generic#KeyValuePair{System#String,System#Object}}#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Kentico.Web.Mvc.ViewDataDictionaryProxy.CreateNew">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

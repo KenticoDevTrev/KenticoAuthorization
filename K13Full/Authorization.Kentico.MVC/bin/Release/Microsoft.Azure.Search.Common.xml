@@ -1,0 +1,360 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Azure.Search.Common</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Rest.Azure.CloudExceptionExtensions">
+            <summary>
+            Defines extension methods for the CloudException class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Rest.Azure.CloudExceptionExtensions.IsAccessConditionFailed(Microsoft.Rest.Azure.CloudException)">
+            <summary>
+            Indicates whether the exception is the result of a failed access condition (ETag) check.
+            </summary>
+            <param name="exception">The exception to check.</param>
+            <returns>true if the exception is a failed access condition (HTTP 412 Precondition Failed), false otherwise.</returns>
+        </member>
+        <member name="T:Microsoft.Azure.Search.Common.EnumerableExtensions">
+            <summary>
+            Defines extension methods for IEnumerable that are used in the implementation of the Azure Cognitive Search
+            .NET SDK.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Common.EnumerableExtensions.ToCommaSeparatedString``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Converts the elements of a collection to strings and concatenates them into a comma-separated list,
+            or returns null for null or empty collections.
+            </summary>
+            <typeparam name="T">The type of elements that will be converted to strings.</typeparam>
+            <param name="enumerable">The collection to turn into a comma-separated string.</param>
+            <returns>A comma-separated string, or null if enumerable is null or empty.</returns>
+        </member>
+        <member name="T:Microsoft.Azure.Search.Common.Throw">
+            <summary>
+            Defines utility methods for validating arguments.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Common.Throw.IfArgument(System.Boolean,System.String,System.String)">
+            <summary>
+            Throws ArgumentException with the given parameter name and optional message if the given Boolean
+            value is true.
+            </summary>
+            <param name="isInvalid">The flag to test. This method throws if it's true and does nothing if
+            it's false.</param>
+            <param name="paramName">The name of the parameter being validated. This is passed to the
+            ArgumentException constructor.</param>
+            <param name="message">An optional error message to include in the ArgumentException. The default
+            message is "Invalid argument."</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Common.Throw.IfArgumentOutOfRange(System.Boolean,System.String,System.String)">
+            <summary>
+            Throws ArgumentOutOfRangeException with the given parameter name and optional message if the given Boolean
+            value is true.
+            </summary>
+            <param name="isInvalid">The flag to test. This method throws if it's true and does nothing if
+            it's false.</param>
+            <param name="paramName">The name of the parameter being validated. This is passed to the
+            ArgumentOutOfRangeException constructor.</param>
+            <param name="message">An optional error message to include in the ArgumentOutOfRangeException. The default
+            message is "Argument out of range."</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Common.Throw.IfArgumentNull``1(``0,System.String,System.String)">
+            <summary>
+            Throws ArgumentNullException with the given parameter name and optional message if the given
+            reference is null.
+            </summary>
+            <typeparam name="T">The type of value to test. Must be a reference type.</typeparam>
+            <param name="value">The reference to test for null.</param>
+            <param name="paramName">The name of the parameter being validated. This is passed to the
+            ArgumentNullException constructor.</param>
+            <param name="message">An optional error message to include in the ArgumentNullException.</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Common.Throw.IfArgumentNullOrEmpty(System.String,System.String,System.String)">
+            <summary>
+            Throws ArgumentNullException or ArgumentException with the given parameter name and optional message
+            if the given string is null or empty, respectively.
+            </summary>
+            <param name="value">The string to test for null or empty.</param>
+            <param name="paramName">The name of the parameter being validated. This is passed to the
+            ArgumentNullException or ArgumentException constructor.</param>
+            <param name="message">An optional error message to include in the ArgumentNullException
+            or ArgumentException.</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Common.Throw.IfNullOrEmptySearchServiceName(System.String)">
+            <summary>
+            Throws ArgumentNullException or ArgumentException with a pre-determined message if the given search
+            service name is null or empty, respectively.
+            </summary>
+            <param name="searchServiceName">The search service name to validate.</param>
+        </member>
+        <member name="T:Microsoft.Azure.Search.Models.SerializePropertyNamesAsCamelCaseAttribute">
+            <summary>
+            Indicates that the public properties of a model type should be serialized as camel-case in order to match
+            the field names of a search index.
+            </summary>
+            <remarks>
+            Types without this attribute are expected to have property names that exactly match their corresponding
+            fields names in Azure Cognitive Search. Otherwise, it would not be possible to use instances of the type to populate
+            the index.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Models.SerializePropertyNamesAsCamelCaseAttribute.IsDefinedOnType``1">
+            <summary>
+            Indicates whether the given type is annotated with SerializePropertyNamesAsCamelCaseAttribute.
+            </summary>
+            <typeparam name="T">The type to test.</typeparam>
+            <returns>true if the given type is annotated with SerializePropertyNamesAsCamelCaseAttribute,
+            false otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Models.SerializePropertyNamesAsCamelCaseAttribute.IsDefinedOnType(System.Type)">
+            <summary>
+            Indicates whether the given type is annotated with SerializePropertyNamesAsCamelCaseAttribute.
+            </summary>
+            <param name="modelType">The type to test.</param>
+            <returns>true if the given type is annotated with SerializePropertyNamesAsCamelCaseAttribute,
+            false otherwise.</returns>
+        </member>
+        <member name="T:Microsoft.Azure.Search.Models.SearchRequestOptions">
+            <summary>
+            Additional parameters for a set of operations.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Models.SearchRequestOptions.#ctor">
+            <summary>
+            Initializes a new instance of the SearchRequestOptions class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Models.SearchRequestOptions.#ctor(System.Nullable{System.Guid})">
+            <summary>
+            Initializes a new instance of the SearchRequestOptions class.
+            </summary>
+            <param name="clientRequestId">The tracking ID sent with the request
+            to help with debugging.</param>
+        </member>
+        <member name="P:Microsoft.Azure.Search.Models.SearchRequestOptions.ClientRequestId">
+            <summary>
+            Gets or sets the tracking ID sent with the request to help with
+            debugging.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.Search.SearchCredentials">
+            <summary>
+            Credentials used to authenticate to a search service.
+            <see href="https://docs.microsoft.com/rest/api/searchservice/"/>
+            </summary>
+            <remarks>
+            See <see href="https://docs.microsoft.com/azure/search/search-security-api-keys"/> for more information about API keys in Azure Cognitive Search.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Azure.Search.SearchCredentials.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the SearchCredentials class with a query key or an admin key. Use a query
+            key if your application does not require write access to the Search Service or index.
+            </summary>
+            <param name="apiKey">api-key used to authenticate to the search service.</param>
+            <remarks>
+            If your application performs only query operations on an index, we recommend passing a query key for the
+            <paramref name="apiKey"/> parameter. This ensures that you have read-only access to the index, which is
+            consistent with the principle of least privilege.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.Azure.Search.SearchCredentials.ApiKey">
+            <summary>
+            api-key used to authenticate to a search service. Can be either a query key for querying only, or
+            an admin key that enables index and document management as well.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.SearchCredentials.ProcessHttpRequestAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            Adds the credentials to the given HTTP request.
+            </summary>
+            <param name="request">HTTP request</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>A Task to track the progress of the async operation.</returns>
+        </member>
+        <member name="T:Microsoft.Azure.Search.Serialization.ExtensibleEnumConverter`1">
+            <summary>
+            Serializes and deserializes "extensible enums" to and from JSON. Extensible enums are like enumerations in
+            that they have well-known values, but they are extensible with new values and the values are based on strings
+            instead of integers.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.ExtensibleEnumConverter`1.#ctor">
+            <summary>
+            Initializes a new instance of the ExtensibleEnumConverter class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.ExtensibleEnumConverter`1.CanConvert(System.Type)">
+            <summary>
+            Indicates whether this converter can serialize or deserialize objects of the given type.
+            </summary>
+            <param name="objectType">The type to test against.</param>
+            <returns>true if objectType derives from ExtensibleEnum, false otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.ExtensibleEnumConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Deserializes a string into an ExtensibleEnum.
+            </summary>
+            <param name="reader">The JSON reader.</param>
+            <param name="objectType">Ignored by this method.</param>
+            <param name="existingValue">Ignored by this method.</param>
+            <param name="serializer">Ignored by this method.</param>
+            <returns>An instance of type T, or null if the current JSON token is null.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.ExtensibleEnumConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Serializes an ExtensibleEnum to a JSON string.
+            </summary>
+            <param name="writer">The JSON writer.</param>
+            <param name="value">The value to serialize.</param>
+            <param name="serializer">Ignored by this method.</param>
+        </member>
+        <member name="T:Microsoft.Azure.Search.Serialization.JsonExtensions">
+            <summary>
+            Defines extension methods for various JSON.NET types that make it easier to implement a custom JsonConverter.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.ExpectAndAdvance(Newtonsoft.Json.JsonReader,Newtonsoft.Json.JsonToken,System.Object[])">
+            <summary>
+            Asserts that the given JSON reader is positioned on a token with the expected type. Optionally asserts
+            that the value of the token matches a given expected value. If any of the assertions fail, this method
+            throws a JsonSerializationException. Otherwise, this method attempts to advance the JSON reader to the
+            next position.
+            </summary>
+            <param name="reader">The JSON reader.</param>
+            <param name="expectedToken">The JSON token on which the reader is expected to be positioned.</param>
+            <param name="expectedValues">Optional; The expected possible values of the current JSON token.</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.ExpectAndAdvance``1(Newtonsoft.Json.JsonReader,Newtonsoft.Json.JsonToken,System.Object[])">
+            <summary>
+            Asserts that the given JSON reader is positioned on a token with the expected type and retrieves the
+            value of the token, if any. Optionally asserts that the value of the token matches a given expected
+            value. If any of the assertions fail, this method throws a JsonSerializationException. Otherwise, this
+            method attempts to advance the JSON reader to the next position.
+            </summary>
+            <typeparam name="TValue">The expected type of the value of the current JSON token.</typeparam>
+            <param name="reader">The JSON reader.</param>
+            <param name="expectedToken">The JSON token on which the reader is expected to be positioned.</param>
+            <param name="expectedValues">Optional; The expected possible values of the current JSON token.</param>
+            <returns>
+            The value of the JSON token before advancing the reader, or default(TValue) if the token has no value.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.Expect(Newtonsoft.Json.JsonReader,Newtonsoft.Json.JsonToken,System.Object[])">
+            <summary>
+            Asserts that the given JSON reader is positioned on a token with the expected type. Optionally asserts
+            that the value of the token matches a given expected value. If any of the assertions fail, this method
+            throws a JsonSerializationException.
+            </summary>
+            <param name="reader">The JSON reader.</param>
+            <param name="expectedToken">The JSON token on which the reader is expected to be positioned.</param>
+            <param name="expectedValues">Optional; The expected possible values of the current JSON token.</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.Expect``1(Newtonsoft.Json.JsonReader,Newtonsoft.Json.JsonToken,System.Object[])">
+            <summary>
+            Asserts that the given JSON reader is positioned on a token with the expected type and retrieves the
+            value of the token, if any. Optionally asserts that the value of the token matches a given expected
+            value. If any of the assertions fail, this method throws a JsonSerializationException.
+            </summary>
+            <typeparam name="TValue">The expected type of the value of the current JSON token.</typeparam>
+            <param name="reader">The JSON reader.</param>
+            <param name="expectedToken">The JSON token on which the reader is expected to be positioned.</param>
+            <param name="expectedValues">Optional; The expected possible values of the current JSON token.</param>
+            <returns>
+            The value of the current JSON token, or default(TValue) if the current token has no value.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.Advance(Newtonsoft.Json.JsonReader)">
+            <summary>
+            Advances the given JSON reader, or throws a JsonSerializationException if it cannot be advanced.
+            </summary>
+            <param name="reader">The JSON reader to advance.</param>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.ReadObject(Newtonsoft.Json.JsonReader,System.Collections.Generic.IEnumerable{System.String},System.Action{Newtonsoft.Json.JsonReader,System.String})">
+            <summary>
+            Reads the properties of JSON objects, enforcing the presence of required properties and ignoring the order of properties.
+            </summary>
+            <param name="reader">The JSON reader to use to read an object.</param>
+            <param name="requiredProperties">
+            The names of all JSON properties that are expected to be present in the parsed object.
+            </param>
+            <param name="readProperty">
+            A callback that reads a property value with the given name from the given <c cref="T:Newtonsoft.Json.JsonReader">JsonReader</c>. It must
+            advance the reader to the name of the next property, or the end of the object if there are no more properties to read.
+            </param>
+            <remarks>
+            This method will leave the reader positioned on the end of the object.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.ReadObjectAndAdvance(Newtonsoft.Json.JsonReader,System.Collections.Generic.IEnumerable{System.String},System.Action{Newtonsoft.Json.JsonReader,System.String})">
+            <summary>
+            Reads the properties of JSON objects, enforcing the presence of required properties and ignoring the order of properties,
+            and then advances the given reader to the next token after the end of the object.
+            </summary>
+            <param name="reader">The JSON reader to use to read an object.</param>
+            <param name="requiredProperties">
+            The names of all JSON properties that are expected to be present in the parsed object.
+            </param>
+            <param name="readProperty">
+            A callback that reads a property value with the given name from the given <c cref="T:Newtonsoft.Json.JsonReader">JsonReader</c>. It must
+            advance the reader to the name of the next property, or the end of the object if there are no more properties to read.
+            </param>
+            <remarks>
+            This method will advance the reader to the next position after the end of the object.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.ReadObject(Newtonsoft.Json.JsonReader,System.Collections.Generic.IEnumerable{System.String},System.Collections.Generic.IEnumerable{System.String},System.Action{Newtonsoft.Json.JsonReader,System.String})">
+            <summary>
+            Reads the properties of JSON objects, enforcing the presence of required properties and ignoring the order of properties.
+            </summary>
+            <param name="reader">The JSON reader to use to read an object.</param>
+            <param name="requiredProperties">
+            The names of all JSON properties that are expected to be present in the parsed object.
+            </param>
+            <param name="optionalProperties">
+            The names of JSON properties besides the required properties that may be present in the parsed object.
+            </param>
+            <param name="readProperty">
+            A callback that reads a property value with the given name from the given <c cref="T:Newtonsoft.Json.JsonReader">JsonReader</c>. It must
+            advance the reader to the name of the next property, or the end of the object if there are no more properties to read.
+            </param>
+            <remarks>
+            This method will leave the reader positioned on the end of the object.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.IsString(Newtonsoft.Json.Linq.JToken,System.String)">
+            <summary>
+            Indicates whether or not the given JSON token matches the expected string.
+            </summary>
+            <param name="token">The token to check.</param>
+            <param name="expectedValue">The expected string value.</param>
+            <returns><c>true</c> if the given JSON token matches the expected string, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.IsNumber(Newtonsoft.Json.Linq.JToken)">
+            <summary>
+            Indicates whether or not the given JSON token is a numeric literal.
+            </summary>
+            <param name="token">The token to check.</param>
+            <returns><c>true</c> if the given JSON token represents a number, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.Search.Serialization.JsonExtensions.IsValid(Newtonsoft.Json.Linq.JObject,System.Collections.Generic.IEnumerable{System.String},System.Func{Newtonsoft.Json.Linq.JProperty,System.Boolean})">
+            <summary>
+            Validates the properties of the given JSON object, enforcing the presence of required properties and ignoring
+            the order of properties.
+            </summary>
+            <param name="obj">The JSON object to validate.</param>
+            <param name="requiredProperties">
+            The names of all JSON properties that are expected to be present in the given object.
+            </param>
+            <param name="isPropertyValid">
+            A predicate that determines whether the name and value of given <c cref="T:Newtonsoft.Json.Linq.JProperty">JProperty</c> are valid.
+            </param>
+            <returns>
+            <c>true</c> if all properties of the given JSON object pass the given validation function and all required properties exist,
+            <c>false</c> otherwise.
+            </returns>
+        </member>
+    </members>
+</doc>
