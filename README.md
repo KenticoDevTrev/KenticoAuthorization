@@ -15,6 +15,20 @@ It also allows for a custom Unauthorized Redirect path in case you need to speci
 1. Overwrite any Events if you need (expecially the GetPage)
 1. Add `[KenticoAuthorize()]` attributes to your ActionResult methods.
 
+For .Net Core only, make sure to set the `LoginPath` (Not authorized and not logged in) and `AccessDeniedPath` (Not authorized and logged in)  in your `ConfigureApplicationCookie`, as the this tool will leverage these paths when redirecting for users.  Here's a sample below:
+
+``` csharp
+// Configures the application's authentication cookie
+services.ConfigureApplicationCookie(c =>
+{
+    c.LoginPath = new PathString("/Account/Signin");
+    c.AccessDeniedPath = new PathString("/Error/403");
+    c.ExpireTimeSpan = TimeSpan.FromDays(14);
+    c.SlidingExpiration = true;
+    c.Cookie.Name = AUTHENTICATION_COOKIE_NAME;
+});
+```
+
 # Usage
 1. Add the `[KenticoAuthorize()]` Attribute to your ActionResult and pass in any properties you wish to configure.
 

@@ -16,10 +16,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Authorization.Kentico.MVC
 {
@@ -70,7 +73,7 @@ namespace Authorization.Kentico.MVC
 
         private KenticoAuthorizeConfiguration Config { get; set; }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async void OnAuthorization(AuthorizationFilterContext context)
         {
             
             if(Claim.Type == "KenticoAuthorize"){
@@ -86,12 +89,12 @@ namespace Authorization.Kentico.MVC
                     }
                     else if(GetCurrentUser().UserName.Equals("public", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        // Needs to log in
-                        context.Result = new UnauthorizedResult();
+                        // Needs to log in, this uses ConfigureApplicationCookie's LoginPath
+                        await context.HttpContext.ChallengeAsync();
                     } else
                     {
-                        // Logged in, but forbidden
-                        context.Result = new ForbidResult();
+                        // Logged in, but forbidden, this uses ConfigureApplicationCookie's AccessDeniedPath
+                        await context.HttpContext.ForbidAsync();
                     }
                 }
             }

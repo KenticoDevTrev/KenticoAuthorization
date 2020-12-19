@@ -9701,7 +9701,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "13.0.0",
+    "version": "13.0.1",
     "restore": {
       "projectUniqueName": "H:\\Web\\KenticoRepositories\\KenticoAuthorization\\K13Core\\Authorization.Kentico.MVC.Core\\Authorization.Kentico.MVC.Core.csproj",
       "projectName": "Authorization.Kentico.MVC.Core",
