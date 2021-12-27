@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "5x3W6A5KSNwrwD9QRGpv9mVF9hp7Y5IJMfD87ZqYaFyrCymMiT4AiCik0JT5fefp4q0IC3n4fOeyQPF2iJU2WQ==",
+  "dgSpecHash": "jVNrWN5euP2x5Ae/OpT0XoANr7Ix6pxPBkJ8f8pF/OciIxNQ3GESGUxG77Plnl3aXUpTq8REHGg9hDYr6J7d4A==",
   "success": true,
   "projectFilePath": "H:\\Web\\KenticoRepositories\\KenticoAuthorization\\K13Core\\Authorization.Kentico.MVC.Core\\Authorization.Kentico.MVC.Core.csproj",
   "expectedPackageFiles": [
@@ -8,8 +8,8 @@
     "C:\\Users\\tfayas\\.nuget\\packages\\awssdk.core\\3.5.1.13\\awssdk.core.3.5.1.13.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\awssdk.s3\\3.5.1.4\\awssdk.s3.3.5.1.4.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\documentformat.openxml\\2.7.2\\documentformat.openxml.2.7.2.nupkg.sha512",
-    "C:\\Users\\tfayas\\.nuget\\packages\\kentico.xperience.aspnetcore.webapp\\13.0.0\\kentico.xperience.aspnetcore.webapp.13.0.0.nupkg.sha512",
-    "C:\\Users\\tfayas\\.nuget\\packages\\kentico.xperience.libraries\\13.0.0\\kentico.xperience.libraries.13.0.0.nupkg.sha512",
+    "C:\\Users\\tfayas\\.nuget\\packages\\kentico.xperience.aspnetcore.webapp\\13.0.5\\kentico.xperience.aspnetcore.webapp.13.0.5.nupkg.sha512",
+    "C:\\Users\\tfayas\\.nuget\\packages\\kentico.xperience.libraries\\13.0.5\\kentico.xperience.libraries.13.0.5.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\maxmind.db\\2.6.1\\maxmind.db.2.6.1.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\maxmind.geoip2\\3.2.0\\maxmind.geoip2.3.2.0.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
@@ -133,7 +133,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.io.compression\\4.3.0\\system.io.compression.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.io.filesystem\\4.3.0\\system.io.filesystem.4.3.0.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\system.io.filesystem.accesscontrol\\4.5.0\\system.io.filesystem.accesscontrol.4.5.0.nupkg.sha512",
-    "C:\\Users\\tfayas\\.nuget\\packages\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\tfayas\\.nuget\\packages\\system.io.packaging\\4.0.0\\system.io.packaging.4.0.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.linq.expressions\\4.3.0\\system.linq.expressions.4.3.0.nupkg.sha512",

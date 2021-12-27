@@ -22,10 +22,5 @@ namespace Authorization.Kentico.MVC.Events
         /// The HttpContext of the request
         /// </summary>
         public HttpContext HttpContext { get; set; }
-
-        /// <summary>
-        /// If an exception occurred between the Before and After (while looking up), this is the exception. Can be used for custom logging.
-        /// </summary>
-        public Exception ExceptionOnLookup { get; set; }
     }
 }

@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    ".NETCoreApp,Version=v3.1": {
+    "net5.0": {
       "AngleSharp/0.14.0": {
         "type": "package",
         "dependencies": {
@@ -48,10 +48,10 @@
           "lib/netstandard1.3/DocumentFormat.OpenXml.dll": {}
         }
       },
-      "Kentico.Xperience.AspNetCore.WebApp/13.0.0": {
+      "Kentico.Xperience.AspNetCore.WebApp/13.0.5": {
         "type": "package",
         "dependencies": {
-          "Kentico.Xperience.Libraries": "[13.0.0]",
+          "Kentico.Xperience.Libraries": "[13.0.5]",
           "Microsoft.Extensions.FileProviders.Embedded": "3.1.8",
           "Microsoft.Extensions.Localization": "3.1.8",
           "Microsoft.Extensions.Logging": "3.1.8"
@@ -81,7 +81,7 @@
           "buildMultiTargeting/Kentico.Xperience.AspNetCore.WebApp.props": {}
         }
       },
-      "Kentico.Xperience.Libraries/13.0.0": {
+      "Kentico.Xperience.Libraries/13.0.5": {
         "type": "package",
         "dependencies": {
           "AWSSDK.Core": "3.5.1.13",
@@ -3240,10 +3240,10 @@
         "lib/netstandard1.3/DocumentFormat.OpenXml.xml"
       ]
     },
-    "Kentico.Xperience.AspNetCore.WebApp/13.0.0": {
-      "sha512": "TaMIJXWX1FoMEovyGnmLa+wUOh3RjHCiIrDIp1U8Hs4o8jlZT7O9YmBgKTTcDjDIExiAOjrOncj8SMsNzLAglg==",
+    "Kentico.Xperience.AspNetCore.WebApp/13.0.5": {
+      "sha512": "FF1kIUfEy0TsUQHf9ir/CfKIIIl2xZ9WsaVTFADVc368rVLrnKyifZZHXpTCnR7ePLATK8WPTxZEmWe1xx/muQ==",
       "type": "package",
-      "path": "kentico.xperience.aspnetcore.webapp/13.0.0",
+      "path": "kentico.xperience.aspnetcore.webapp/13.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3256,7 +3256,7 @@
         "buildMultiTargeting/Kentico.Xperience.AspNetCore.WebApp.props",
         "buildTransitive/Kentico.Content.Web.Rcl.props",
         "buildTransitive/Kentico.Xperience.AspNetCore.WebApp.props",
-        "kentico.xperience.aspnetcore.webapp.13.0.0.nupkg.sha512",
+        "kentico.xperience.aspnetcore.webapp.13.0.5.nupkg.sha512",
         "kentico.xperience.aspnetcore.webapp.nuspec",
         "lib/netcoreapp3.1/Kentico.Content.Web.Mvc.dll",
         "lib/netcoreapp3.1/Kentico.Content.Web.Mvc.xml",
@@ -3307,16 +3307,16 @@
         "staticwebassets/Scripts/jquery.unobtrusive-ajax.js"
       ]
     },
-    "Kentico.Xperience.Libraries/13.0.0": {
-      "sha512": "ox3So3O9GW+8n9q0tIZHI2Mr2BYXjF4VvjxOuJNw1V6V8gdJ89sc00AkkngHs3dtPLAhqcxHWwnm5ZJ74+cQVg==",
+    "Kentico.Xperience.Libraries/13.0.5": {
+      "sha512": "MBPGFdj/QLxqFnhv8zQF0U4ALDy7zLqBeBjWkBMOyAZU+GcP4M1FKACm0LmJfgsr4HsawdLnXrZjTjDK56JtUg==",
       "type": "package",
-      "path": "kentico.xperience.libraries/13.0.0",
+      "path": "kentico.xperience.libraries/13.0.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "LicenseAgreement.txt",
-        "kentico.xperience.libraries.13.0.0.nupkg.sha512",
+        "kentico.xperience.libraries.13.0.5.nupkg.sha512",
         "kentico.xperience.libraries.nuspec",
         "lib/NET48/CMS.Activities.Loggers.dll",
         "lib/NET48/CMS.Activities.Loggers.xml",
@@ -9689,9 +9689,9 @@
     }
   },
   "projectFileDependencyGroups": {
-    ".NETCoreApp,Version=v3.1": [
-      "Kentico.Xperience.AspNetCore.WebApp >= 13.0.0",
-      "Kentico.Xperience.Libraries >= 13.0.0",
+    "net5.0": [
+      "Kentico.Xperience.AspNetCore.WebApp >= 13.0.5",
+      "Kentico.Xperience.Libraries >= 13.0.5",
       "Microsoft.AspNetCore.Http.Abstractions >= 2.2.0",
       "Microsoft.AspNetCore.Mvc.Core >= 2.2.0"
     ]
@@ -9701,7 +9701,7 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "13.0.1",
+    "version": "13.5.0",
     "restore": {
       "projectUniqueName": "H:\\Web\\KenticoRepositories\\KenticoAuthorization\\K13Core\\Authorization.Kentico.MVC.Core\\Authorization.Kentico.MVC.Core.csproj",
       "projectName": "Authorization.Kentico.MVC.Core",
@@ -9717,7 +9717,7 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "netcoreapp3.1"
+        "net5.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -9725,8 +9725,8 @@
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
+        "net5.0": {
+          "targetAlias": "net5.0",
           "projectReferences": {}
         }
       },
@@ -9737,16 +9737,16 @@
       }
     },
     "frameworks": {
-      "netcoreapp3.1": {
-        "targetAlias": "netcoreapp3.1",
+      "net5.0": {
+        "targetAlias": "net5.0",
         "dependencies": {
           "Kentico.Xperience.AspNetCore.WebApp": {
             "target": "Package",
-            "version": "[13.0.0, )"
+            "version": "[13.0.5, )"
           },
           "Kentico.Xperience.Libraries": {
             "target": "Package",
-            "version": "[13.0.0, )"
+            "version": "[13.0.5, )"
           },
           "Microsoft.AspNetCore.Http.Abstractions": {
             "target": "Package",
@@ -9775,7 +9775,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }

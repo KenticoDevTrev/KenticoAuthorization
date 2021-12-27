@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Authorization.Kentico.MVC.Events
 {
+    [Obsolete("These events are no longer used, please instead implement your own IAuthorizationContextCustomizer and register it in the service collection.")]
     public static class AuthorizeEvents
     {
         public static GetPageEventHandler GetPage;

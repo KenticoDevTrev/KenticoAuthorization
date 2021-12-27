@@ -1,20 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>13.0.1</Version>
+    <TargetFramework>net5.0</TargetFramework>
+    <Version>13.5.0</Version>
     <Authors>Trevor Fayas</Authors>
     <Company>Heartland Business Systems</Company>
     <Product>Kentico Authorization Attribute</Product>
-    <Description>KenticoAuthorize attribute that allows you to authenticate users based on Logged in, Page ACL, Role, Username, and Module Permission, also allows for custom redirects on unauthenticated.</Description>
+    <Description>KenticoAuthorize attribute that allows you to authenticate users based on Logged in, Page ACL, Role, Username, Module Permission, and your own Custom Logic. Also allows for custom redirects on unauthenticated.</Description>
     <Copyright>Heartland Business Systems</Copyright>
     <PackageProjectUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</PackageProjectUrl>
     <RepositoryUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</RepositoryUrl>
     <PackageTags>Authorization, Kentico</PackageTags>
-    <PackageReleaseNotes>Unauthorized and Not Authenticated results were not properly executing, adjusted code to properly execute these, it now uses the ConfigureApplicationCookie's LoginPath and AccessDeniedPath (usually configured in Startup.cs)</PackageReleaseNotes>
+    <PackageReleaseNotes>Revamped logic completely.
+Replaced Global Events with IAuthorizationContextCustomizer, added IAutohrizationContext interface, adjusted attributes to properly be separated from the request filtering, added RegisterPageBuilderAuthorization assembly attribute to allow filter on Page Builder sourced requests, and added ability to put custom IAuthorization classes to allow specific logic.</PackageReleaseNotes>
     <PackageIcon>hbs-favicon-96x96.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>13.0.1.0</AssemblyVersion>
+    <AssemblyVersion>13.5.0.0</AssemblyVersion>
+    <RootNamespace>Authorization.Kentico</RootNamespace>
+    <FileVersion>13.5.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kentico.Xperience.AspNetCore.WebApp" Version="13.0.0" />
-    <PackageReference Include="Kentico.Xperience.Libraries" Version="13.0.0" />
+    <PackageReference Include="Kentico.Xperience.AspNetCore.WebApp" Version="13.0.5" />
+    <PackageReference Include="Kentico.Xperience.Libraries" Version="13.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.0" />
   </ItemGroup>

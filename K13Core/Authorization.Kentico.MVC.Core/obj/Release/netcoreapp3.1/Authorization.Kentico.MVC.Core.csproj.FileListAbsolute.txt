@@ -6,3 +6,4 @@ H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MV
 H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\bin\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.pdb
 H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.dll
 H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.pdb
+H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.csprojAssemblyReference.cache

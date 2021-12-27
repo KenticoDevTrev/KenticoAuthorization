@@ -5,7 +5,7 @@
   },
   "projects": {
     "H:\\Web\\KenticoRepositories\\KenticoAuthorization\\K13Core\\Authorization.Kentico.MVC.Core\\Authorization.Kentico.MVC.Core.csproj": {
-      "version": "13.0.1",
+      "version": "13.5.0",
       "restore": {
         "projectUniqueName": "H:\\Web\\KenticoRepositories\\KenticoAuthorization\\K13Core\\Authorization.Kentico.MVC.Core\\Authorization.Kentico.MVC.Core.csproj",
         "projectName": "Authorization.Kentico.MVC.Core",
@@ -21,7 +21,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "netcoreapp3.1"
+          "net5.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -29,8 +29,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
+          "net5.0": {
+            "targetAlias": "net5.0",
             "projectReferences": {}
           }
         },
@@ -41,16 +41,16 @@
         }
       },
       "frameworks": {
-        "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
+        "net5.0": {
+          "targetAlias": "net5.0",
           "dependencies": {
             "Kentico.Xperience.AspNetCore.WebApp": {
               "target": "Package",
-              "version": "[13.0.0, )"
+              "version": "[13.0.5, )"
             },
             "Kentico.Xperience.Libraries": {
               "target": "Package",
-              "version": "[13.0.0, )"
+              "version": "[13.0.5, )"
             },
             "Microsoft.AspNetCore.Http.Abstractions": {
               "target": "Package",
@@ -79,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
