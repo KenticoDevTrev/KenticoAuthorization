@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XperienceCommunity.Authorization", "XperienceCommunity.Authorization\XperienceCommunity.Authorization.csproj", "{B071E6B2-69AB-4475-8248-93E9F326E32D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B071E6B2-69AB-4475-8248-93E9F326E32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B071E6B2-69AB-4475-8248-93E9F326E32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B071E6B2-69AB-4475-8248-93E9F326E32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B071E6B2-69AB-4475-8248-93E9F326E32D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A77A534C-3BD6-47B3-A2BB-3DC79D14A54E}
+	EndGlobalSection
+EndGlobal

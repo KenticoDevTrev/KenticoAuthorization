@@ -1,9 +1,0 @@
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.AssemblyInfoInputs.cache
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.AssemblyInfo.cs
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.csproj.CoreCompileInputs.cache
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\bin\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.deps.json
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\bin\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.dll
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\bin\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.pdb
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.dll
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.pdb
-H:\Web\KenticoRepositories\KenticoAuthorization\K13Core\Authorization.Kentico.MVC.Core\obj\Release\netcoreapp3.1\Authorization.Kentico.MVC.Core.csprojAssemblyReference.cache
