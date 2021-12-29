@@ -127,7 +127,7 @@ namespace XperienceCommunity.Authorization
             }
         }
 
-        private string[] ValueToArray(string values)
+        private static string[] ValueToArray(string values)
         {
             return !string.IsNullOrWhiteSpace(values) ? values.Split(";,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray() : Array.Empty<string>();
         }

@@ -12,7 +12,7 @@
     <description>Allows you to place authorization rules on Controller Actions and PageBuilder requests that can authorize based on Users, Roles, Authenticated, Module Permissions, or custom logic.</description>
     <releaseNotes>Initial Release</releaseNotes>
     <tags>Kentico, Xperience, Authorization, Permissions</tags>
-    <repository type="Github" url="https://github.com/KenticoDevTrev/KenticoAuthorization" commit="6ba91288fffbbe8cdf4a3c75a36f1e8161e6c0fb" />
+    <repository type="Github" url="https://github.com/KenticoDevTrev/KenticoAuthorization" commit="8fc2209df4103e1e7184b470cc3d6f7882dfd6ef" />
     <dependencies>
       <group targetFramework="net5.0">
         <dependency id="Kentico.Xperience.AspNetCore.WebApp" version="13.0.5" exclude="Build,Analyzers" />

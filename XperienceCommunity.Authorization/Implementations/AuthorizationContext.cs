@@ -1,4 +1,5 @@
-﻿using CMS.Core;
+﻿using CMS.Base;
+using CMS.Core;
 using CMS.DataEngine;
 using CMS.DocumentEngine;
 using CMS.Helpers;
@@ -30,6 +31,7 @@ namespace XperienceCommunity.Authorization.Implementations
         private readonly IPageRetriever _pageRetriever;
         private readonly IPageDataContextRetriever _pageDataContextRetriever;
         private readonly IAuthorizationContextCustomizer _authorizationContextCustomizer;
+        private readonly ISiteService _siteService;
 
         public HttpContext _httpContext { get; }
 
@@ -41,7 +43,8 @@ namespace XperienceCommunity.Authorization.Implementations
             IEventLogService eventLogService,
             IPageRetriever pageRetriever,
             IPageDataContextRetriever pageDataContextRetriever,
-            IAuthorizationContextCustomizer authorizationContextCustomizer)
+            IAuthorizationContextCustomizer authorizationContextCustomizer,
+            ISiteService siteService)
         {
             _progressiveCache = progressiveCache;
             _httpContextAccessor = httpContextAccessor;
@@ -52,6 +55,7 @@ namespace XperienceCommunity.Authorization.Implementations
             _pageRetriever = pageRetriever;
             _pageDataContextRetriever = pageDataContextRetriever;
             _authorizationContextCustomizer = authorizationContextCustomizer;
+            _siteService = siteService;
             _httpContext = _httpContextAccessor.HttpContext;
         }
 
@@ -271,71 +275,25 @@ namespace XperienceCommunity.Authorization.Implementations
                 }
 
             }, new CacheSettings(60, "UserContext", foundUser?.UserName ?? "public", site.SiteID));
-            /*
-            // Get roles and permissions
-            var userContext = new UserContext()
-            {
-                UserName = foundUser.UserName,
-                IsAuthenticated = true,
-                IsGlobalAdmin = foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.GlobalAdmin,
-            };
-
-            if (foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Admin || foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Editor)
-            {
-                // Only add editor/admin if they are on this site
-                var userSite = await new ObjectQuery<UserSiteInfo>()
-                    .WhereEquals(nameof(UserSiteInfo.UserID), foundUser.UserID)
-                    .WhereEquals(nameof(UserSiteInfo.SiteID), site.SiteID)
-                    .GetEnumerableTypedResultAsync();
-                if (userSite.Any())
-                {
-                    userContext.IsEditor = foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Editor;
-                    userContext.IsAdministrator = foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Admin;
-                }
-            }
-
-            // Roles
-            var rolesResults = (await new ObjectQuery<RoleInfo>()
-                .Where($"RoleID in (Select UR.RoleID from CMS_UserRole UR where UserID = {foundUser.UserID})")
-                .WhereEqualsOrNull(nameof(RoleInfo.SiteID), site.SiteID)
-                .Columns(nameof(RoleInfo.RoleName))
-                .GetEnumerableTypedResultAsync());
-            var roles = rolesResults.ToList().Select(x => x.RoleName);
-
-            var membershipRolesResults = (await new ObjectQuery<RoleInfo>()
-                .Source(x => x.Join<MembershipRoleInfo>("CMS_Role.RoleID", "CMS_MembershipRole.RoleID"))
-                .Source(x => x.Join<MembershipInfo>("CMS_MembershipRole.MembershipID", "CMS_Membership.MembershipID"))
-                .Source(x => x.Join<MembershipUserInfo>("CMS_Membership.MembershipID", "CMS_MembershipUser.MembershipID"))
-                .WhereEquals("UserID", foundUser.UserID)
-                .Columns(nameof(RoleInfo.RoleName))
-                .GetEnumerableTypedResultAsync());
-            var membershipRoles = membershipRolesResults.ToList().Select(x => x.RoleName);
-
-            userContext.Roles = roles.Union(membershipRoles);
-
-            // Permission names
-            var permissionsResults = (await new ObjectQuery<PermissionNameInfo>()
-                 .Source(x => x.Join<ResourceInfo>("CMS_Permission.ResourceID", "CMS_Resource.ResourceID"))
-                 .Source(x => x.Join<RolePermissionInfo>("CMS_Permission.PermissionID", "CMS_RolePermission.PermissionID"))
-                 .Source(x => x.Join<RoleInfo>("CMS_RolePermission.RoleID", "CMS_Role.RoleID"))
-                 .WhereIn(nameof(RoleInfo.RoleName), userContext.Roles.ToArray())
-                 .Columns($"{nameof(ResourceInfo.ResourceName)}+'.'+{nameof(PermissionNameInfo.PermissionName)} as PermissionName")
-                 .GetEnumerableResultAsync());
-            userContext.Permissions = permissionsResults.ToList().Select(x => (string)x["PermissionName"]);
-            return userContext;
-            */
         }
 
         private SiteInfo SiteContextSafe()
         {
-            return SiteContext.CurrentSite ?? _progressiveCache.Load(cs =>
+            try
             {
-                if (cs.Cached)
+                return (SiteInfo)_siteService.CurrentSite;
+            } catch(Exception)
+            {
+                // if site context isn't available yet return first site...
+                return _progressiveCache.Load(cs =>
                 {
-                    cs.CacheDependency = CacheHelper.GetCacheDependency("cms.site|all");
-                }
-                return SiteInfo.Provider.Get().TopN(1).FirstOrDefault();
-            }, new CacheSettings(1440, "KenticoAuthorizationGetSiteContextSafe"));
+                    if (cs.Cached)
+                    {
+                        cs.CacheDependency = CacheHelper.GetCacheDependency("cms.site|all");
+                    }
+                    return SiteInfo.Provider.Get().TopN(1).FirstOrDefault();
+                }, new CacheSettings(1440, "KenticoAuthorizationGetSiteContextSafe"));
+            }
         }
 
         /// <summary>
@@ -414,60 +372,60 @@ namespace XperienceCommunity.Authorization.Implementations
         /// <summary>
         /// Gets the Relative Url without the Application Path, and with Url cleaned.
         /// </summary>
-        /// <param name="RelativeUrl"></param>
-        /// <param name="ApplicationPath"></param>
-        /// <param name="SiteName"></param>
+        /// <param name="relativeUrl"></param>
+        /// <param name="applicationPath"></param>
+        /// <param name="siteName"></param>
         /// <returns></returns>
-        private string GetUrl(string RelativeUrl, string ApplicationPath, string SiteName)
+        private string GetUrl(string relativeUrl, string applicationPath, string siteName)
         {
             // Remove Application Path from Relative Url if it exists at the beginning
-            if (!string.IsNullOrWhiteSpace(ApplicationPath) && ApplicationPath != "/" && RelativeUrl.ToLower().IndexOf(ApplicationPath.ToLower()) == 0)
+            if (!string.IsNullOrWhiteSpace(applicationPath) && applicationPath != "/" && relativeUrl.ToLower().IndexOf(applicationPath.ToLower()) == 0)
             {
-                RelativeUrl = RelativeUrl.Substring(ApplicationPath.Length);
+                relativeUrl = relativeUrl.Substring(applicationPath.Length);
             }
 
-            return GetCleanUrl(RelativeUrl, SiteName);
+            return GetCleanUrl(relativeUrl, siteName);
         }
 
         /// <summary>
         /// Gets the Url cleaned up with special characters removed
         /// </summary>
-        /// <param name="Url"></param>
-        /// <param name="SiteName"></param>
+        /// <param name="url"></param>
+        /// <param name="siteName"></param>
         /// <returns></returns>
-        private string GetCleanUrl(string Url, string SiteName)
+        private string GetCleanUrl(string url, string siteName)
         {
             // Remove trailing or double //'s and any url parameters / anchors
-            Url = "/" + Url.Trim("/ ".ToCharArray()).Split('?')[0].Split('#')[0];
-            Url = HttpUtility.UrlDecode(Url);
+            url = "/" + url.Trim("/ ".ToCharArray()).Split('?')[0].Split('#')[0];
+            url = HttpUtility.UrlDecode(url);
 
             // Replace forbidden characters
             // Remove / from the forbidden characters because that is part of the Url, of course.
 
-            if (!string.IsNullOrWhiteSpace(SiteName))
+            if (!string.IsNullOrWhiteSpace(siteName))
             {
-                string ForbiddenCharacters = URLHelper.ForbiddenURLCharacters(SiteName).Replace("/", "");
-                string Replacement = URLHelper.ForbiddenCharactersReplacement(SiteName).ToString();
-                Url = ReplaceAnyCharInString(Url, ForbiddenCharacters.ToCharArray(), Replacement);
+                string ForbiddenCharacters = URLHelper.ForbiddenURLCharacters(siteName).Replace("/", "");
+                string Replacement = URLHelper.ForbiddenCharactersReplacement(siteName).ToString();
+                url = ReplaceAnyCharInString(url, ForbiddenCharacters.ToCharArray(), Replacement);
             }
 
             // Escape special url characters
-            Url = URLHelper.EscapeSpecialCharacters(Url);
+            url = URLHelper.EscapeSpecialCharacters(url);
 
-            return Url;
+            return url;
         }
 
         /// <summary>
         /// Replaces any char in the char array with the replace value for the string
         /// </summary>
         /// <param name="value">The string to replace values in</param>
-        /// <param name="CharsToReplace">The character array of characters to replace</param>
-        /// <param name="ReplaceValue">The value to replace them with</param>
+        /// <param name="charsToReplace">The character array of characters to replace</param>
+        /// <param name="replaceValue">The value to replace them with</param>
         /// <returns>The cleaned string</returns>
-        private string ReplaceAnyCharInString(string value, char[] CharsToReplace, string ReplaceValue)
+        private string ReplaceAnyCharInString(string value, char[] charsToReplace, string replaceValue)
         {
-            string[] temp = value.Split(CharsToReplace, StringSplitOptions.RemoveEmptyEntries);
-            return String.Join(ReplaceValue, temp);
+            string[] temp = value.Split(charsToReplace, StringSplitOptions.RemoveEmptyEntries);
+            return String.Join(replaceValue, temp);
         }
 
         /// <summary>

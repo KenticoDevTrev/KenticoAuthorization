@@ -17,7 +17,7 @@ using System.Reflection;
     "uests that can authorize based on Users, Roles, Authenticated, Module Permission" +
     "s, or custom logic.")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("13.5.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("13.5.0+6ba91288fffbbe8cdf4a3c75a36f1e8161e6c0fb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("13.5.0+8fc2209df4103e1e7184b470cc3d6f7882dfd6ef")]
 [assembly: System.Reflection.AssemblyProductAttribute("XperienceCommunity.Authorization")]
 [assembly: System.Reflection.AssemblyTitleAttribute("XperienceCommunity.Authorization")]
 [assembly: System.Reflection.AssemblyVersionAttribute("13.5.0.0")]
