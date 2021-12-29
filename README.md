@@ -41,6 +41,8 @@ For Page Builder requests, add `[assembly: RegisterPageBuilderAuthorization()]` 
 
 Both attributes have multiple constructions to cover basic scenarios, as well as a full constructor to allow you complete control.
 
+Empty constructor (`[ControllerActionAuthorization()]`) means only check for Authenticated (logged in).
+
 # Migration from Previous Packages
 If you either used `Authorization.Kentico.MVC` (.net 4.8) or `Authorization.Kentico.MVC.Core` (.net Core) on your MVC Site, you will need to perform the following steps:
 1. Uninstall `Authorization.Kentico.MVC` / `Authorization.Kentico.MVC.Core` packages
