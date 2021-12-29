@@ -74,6 +74,8 @@ This interface takes the current objects (from `IAuthorizationContextCustomizer`
 
 
 # Contributions, bug fixes and License
+Big thanks to [Sean Wright](https://github.com/seangwright) for all his tutoring and help on .net core, he helped me get this package where it needed to be!
+
 Feel free to Fork and submit pull requests to contribute.
 
 You can submit bugs through the issue list and i will get to them as soon as i can, unless you want to fix it yourself and submit a pull request!
