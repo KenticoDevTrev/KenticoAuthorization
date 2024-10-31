@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</PackageProjectUrl>
     <RepositoryUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</RepositoryUrl>
     <RepositoryType>Github</RepositoryType>
-    <PackageIcon>hbs-favicon-96x96.png</PackageIcon>
+    <PackageIcon>kentico-icon-128x128.png</PackageIcon>
     <PackageTags>Kentico, Xperience, Authorization, Permissions</PackageTags>
     <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\hbs-favicon-96x96.png">
+    <None Include="..\..\..\..\kentico-icon-128x128.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
