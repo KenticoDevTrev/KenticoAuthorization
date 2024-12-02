@@ -1,4 +1,5 @@
-﻿using CMS.DocumentEngine;
+﻿using CMS.ContentEngine;
+using CMS.Websites;
 using System.Threading.Tasks;
 
 namespace XperienceCommunity.Authorization
@@ -13,6 +14,6 @@ namespace XperienceCommunity.Authorization
         /// <param name="currentPage">The current page being authorized, if any</param>
         /// <param name="pageTemplateIdentifier">The page builder template identifier, if any</param>
         /// <returns>If they are authorized or not.</returns>
-        public Task<bool> IsAuthorizedAsync(UserContext user, AuthorizationConfiguration authConfig, TreeNode currentPage = null, string pageTemplateIdentifier = default);
+        public Task<bool> IsAuthorizedAsync(UserContext user, AuthorizationConfiguration authConfig, IWebPageFieldsSource? currentPage = null, string? pageTemplateIdentifier = default);
     }
 }

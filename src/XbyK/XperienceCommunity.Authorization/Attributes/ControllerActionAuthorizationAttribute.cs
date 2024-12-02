@@ -1,8 +1,4 @@
-﻿using CMS.DocumentEngine;
-using System;
-using System.Linq;
-
-namespace XperienceCommunity.Authorization
+﻿namespace XperienceCommunity.Authorization
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class ControllerActionAuthorizationAttribute : Attribute
@@ -15,26 +11,15 @@ namespace XperienceCommunity.Authorization
             AuthorizationConfiguration = new AuthorizationConfiguration();
         }
 
-
-        /// <summary>
-        /// Create Authorization based on a given type.
-        /// </summary>
-        /// <param name="users">; , or | separated string of values, can put none or null if ByPageACL or ByAuthenticated</param>
-        /// <returns></returns>
-        public ControllerActionAuthorizationAttribute(AuthorizationType type, string values = null)
-        {
-            CreateAuthorizationCofiguration(type, ValueToArray(values));
-        }
-
         /// <summary>
         /// Create Authorization based on a given type.
         /// </summary>
         /// <param name="values">the values (can provide none if ByPageACL or ByAuthenticated)</param>
         /// <returns></returns>
-        public ControllerActionAuthorizationAttribute(AuthorizationType type, string[] values = null)
+        public ControllerActionAuthorizationAttribute(AuthorizationType type, string[]? values = null)
         {
-            values ??= Array.Empty<string>();
-            CreateAuthorizationCofiguration(type, values);
+            values ??= [];
+            AuthorizationConfiguration = CreateAuthorizationCofiguration(type, values);
         }
 
         /// <summary>
@@ -55,22 +40,18 @@ namespace XperienceCommunity.Authorization
         /// </summary>
         /// <param name="userAuthenticationRequired">If the user is required to be authenticated, true by default.</param>
         /// <param name="checkPageACL">If the Page's ACL security settings should be checked/enforced. false by default.</param>
-        /// <param name="nodePermissionToCheck">What node permission to check if Page ACL is being used.  Default is the Read Permission</param>
-        /// <param name="resourceAndPermissionNames">Resource+Permisssion names, comma or semi-colon separated list (ex: "mymodule.dosomething;mymodule.doanotherthing")</param>
         /// <param name="customUnauthorizedRedirect">If instead of throwing the general Login or Unauthorized result, you wish to redirect to another location.</param>
-        /// <param name="roles">Roles the user must be part of, comma or semi-colon separated list</param>
-        /// <param name="users">Usernames of the authorized users, comma or semi-colon separated list</param>
+        /// <param name="roles">Roles the user must be part of.</param>
+        /// <param name="users">Usernames of the authorized users.</param>
         /// <param name="customAuthorization">Type of the IAuthorization inherited class that you wish to use to authorize this request.  Must register this class in the services container BEFORE the services.UseAuthorization().</param>
         /// <param name="cacheAuthenticationResults">If the authenticated results should be cached to decrease time for re-validating on the same resources, default is true.</param>
         public ControllerActionAuthorizationAttribute(
             bool userAuthenticationRequired = true,
             bool checkPageACL = false,
-            NodePermissionsEnum nodePermissionToCheck = NodePermissionsEnum.Read,
-            string resourceAndPermissionNames = null,
-            string customUnauthorizedRedirect = null,
-            string roles = null,
-            string users = null,
-            Type customAuthorization = null,
+            string? customUnauthorizedRedirect = null,
+            string[]? roles = null,
+            string[]? users = null,
+            Type? customAuthorization = null,
             bool cacheAuthenticationResults = true
             )
         {
@@ -78,58 +59,33 @@ namespace XperienceCommunity.Authorization
             {
                 UserAuthenticationRequired = userAuthenticationRequired,
                 CheckPageACL = checkPageACL,
-                NodePermissionToCheck = nodePermissionToCheck,
-                CacheAuthenticationResults = cacheAuthenticationResults
+                Roles = (roles ?? []).Where(x => !string.IsNullOrWhiteSpace(x)),
+                Users = (users ?? []).Where(x => !string.IsNullOrWhiteSpace(x)),
+                CacheAuthenticationResults = cacheAuthenticationResults,
+                CustomUnauthorizedRedirect = !string.IsNullOrWhiteSpace(customUnauthorizedRedirect) ? customUnauthorizedRedirect : null,
+                CustomAuthorization = customAuthorization
             };
-
-            if (!string.IsNullOrWhiteSpace(resourceAndPermissionNames))
-            {
-                AuthorizationConfiguration.ResourceAndPermissionNames = ValueToArray(resourceAndPermissionNames);
-            }
-            if (!string.IsNullOrWhiteSpace(roles))
-            {
-                AuthorizationConfiguration.Roles = ValueToArray(roles);
-            }
-            if (!string.IsNullOrWhiteSpace(users))
-            {
-                AuthorizationConfiguration.Users = ValueToArray(users);
-            }
-            if (!string.IsNullOrWhiteSpace(customUnauthorizedRedirect))
-            {
-                AuthorizationConfiguration.CustomUnauthorizedRedirect = customUnauthorizedRedirect;
-            }
-            if (customAuthorization != null)
-            {
-                AuthorizationConfiguration.CustomAuthorization = customAuthorization;
-            }
         }
 
-        private void CreateAuthorizationCofiguration(AuthorizationType type, string[] values)
+        private static AuthorizationConfiguration CreateAuthorizationCofiguration(AuthorizationType type, string[] values)
         {
-            AuthorizationConfiguration = new AuthorizationConfiguration();
+            var authorizationConfiguration = new AuthorizationConfiguration();
             switch (type)
             {
                 case AuthorizationType.ByAuthenticated:
-                    AuthorizationConfiguration.UserAuthenticationRequired = true;
+                    authorizationConfiguration.UserAuthenticationRequired = true;
                     break;
                 case AuthorizationType.ByPageACL:
-                    AuthorizationConfiguration.CheckPageACL = true;
-                    break;
-                case AuthorizationType.ByPermission:
-                    AuthorizationConfiguration.ResourceAndPermissionNames = values;
+                    authorizationConfiguration.CheckPageACL = true;
                     break;
                 case AuthorizationType.ByRole:
-                    AuthorizationConfiguration.Roles = values;
+                    authorizationConfiguration.Roles = values;
                     break;
                 case AuthorizationType.ByUser:
-                    AuthorizationConfiguration.Users = values;
+                    authorizationConfiguration.Users = values;
                     break;
             }
-        }
-
-        private static string[] ValueToArray(string values)
-        {
-            return !string.IsNullOrWhiteSpace(values) ? values.Split(";,".ToCharArray(), StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray() : Array.Empty<string>();
+            return authorizationConfiguration;
         }
 
         /// <summary>

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace XperienceCommunity.Authorization.Internal
+﻿namespace XperienceCommunity.Authorization.Internal
 {
     public class PageBuilderAuthorizationConfiguration
     {
-        public IEnumerable<string> PageTemplateIdentifiers { get; set; } = Array.Empty<string>();
+        public IEnumerable<string> PageTemplateIdentifiers { get; set; } = [];
         public bool TemplateIdentifiersArePrefix { get; set; } = false;
-        public IEnumerable<string> PageClassNames { get; set; } = Array.Empty<string>();
+        public IEnumerable<string> PageClassNames { get; set; } = [];
 
         public bool Applies(string pageTemplateIdentifier, string pageClassName)
         {
             return
-                PageTemplateIdentifiers.Any(x => x.StartsWith(pageTemplateIdentifier, StringComparison.OrdinalIgnoreCase) && (TemplateIdentifiersArePrefix || x.Length == pageTemplateIdentifier.Length))
+                PageTemplateIdentifiers.Any(x => pageTemplateIdentifier.StartsWith(x, StringComparison.OrdinalIgnoreCase) && (TemplateIdentifiersArePrefix || x.Length == pageTemplateIdentifier.Length))
                 ||
                 PageClassNames.Contains(pageClassName, StringComparer.InvariantCultureIgnoreCase);
         }
@@ -23,7 +19,7 @@ namespace XperienceCommunity.Authorization.Internal
         {
             return new PageBuilderAuthorizationConfiguration()
             {
-                PageTemplateIdentifiers = new string[] { templateIdentifier },
+                PageTemplateIdentifiers = [templateIdentifier],
                 TemplateIdentifiersArePrefix = templateIdentifierIsPrefix
             };
         }
@@ -31,7 +27,7 @@ namespace XperienceCommunity.Authorization.Internal
         {
             return new PageBuilderAuthorizationConfiguration()
             {
-                PageClassNames = new string[] { pageType }
+                PageClassNames = [pageType]
             };
         }
     }

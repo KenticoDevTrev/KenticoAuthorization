@@ -2,31 +2,28 @@
 
 namespace XperienceCommunity.Authorization.Events
 {
-    public class GetCultureEventArgs
+    public class GetCultureEventArgs(string defaultCulture, string siteName, HttpRequest request, bool previewEnabled)
     {
-        /// <summary>
-        /// The Culture, this is what you should set when determining the culture
-        /// </summary>
-        public string Culture { get; set; }
+        public string? Culture { get; set; }
 
         /// <summary>
         /// The Site's Default culture, based on the Current Site
         /// </summary>
-        public string DefaultCulture { get; set; }
+        public string DefaultCulture { get; set; } = defaultCulture;
 
         /// <summary>
         /// The Site Code Name of the current site
         /// </summary>
-        public string SiteName { get; set; }
+        public string SiteName { get; set; } = siteName;
 
         /// <summary>
         /// The HttpRequest
         /// </summary>
-        public HttpRequest Request { get; set; }
+        public HttpRequest Request { get; set; } = request;
 
         /// <summary>
         /// True if Kentico's Preview is enable, if true the culture will be set by the PreviewEnabled after the "Before" event.
         /// </summary>
-        public bool PreviewEnabled { get; set; }
+        public bool PreviewEnabled { get; set; } = previewEnabled;
     }
 }

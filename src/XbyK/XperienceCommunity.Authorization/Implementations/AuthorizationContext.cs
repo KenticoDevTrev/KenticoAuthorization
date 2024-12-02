@@ -1,22 +1,24 @@
 ﻿using CMS.Base;
+using CMS.ContentEngine;
+using CMS.ContentEngine.Internal;
 using CMS.Core;
 using CMS.DataEngine;
-using CMS.DocumentEngine;
+using CMS.Headless.Internal;
 using CMS.Helpers;
-using CMS.Localization;
 using CMS.Membership;
 using CMS.Modules;
-using CMS.SiteProvider;
+using CMS.Websites;
+using CMS.Websites.Internal;
+using CMS.Websites.Routing;
 using Kentico.Content.Web.Mvc;
 using Kentico.Web.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Data;
 using System.Web;
 using XperienceCommunity.Authorization.Events;
+using XperienceCommunity.MemberRoles;
 
 namespace XperienceCommunity.Authorization.Implementations
 {
@@ -24,277 +26,235 @@ namespace XperienceCommunity.Authorization.Implementations
     {
         private readonly IProgressiveCache _progressiveCache;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IUserInfoProvider _userInfoProvider;
-        private readonly IUserRoleInfoProvider _userRoleInfoProvider;
-        private readonly IUserSiteInfoProvider _userSiteInfoProvider;
         private readonly IEventLogService _eventLogService;
-        private readonly IPageRetriever _pageRetriever;
-        private readonly IPageDataContextRetriever _pageDataContextRetriever;
         private readonly IAuthorizationContextCustomizer _authorizationContextCustomizer;
-        private readonly ISiteService _siteService;
+        private readonly IWebsiteChannelContext _websiteChannelContext;
+        private readonly IWebPageDataContextRetriever _webPageDataContextRetriever;
+        private readonly IContentQueryExecutor _contentQueryExecutor;
+        private readonly IInfoProvider<WebPageUrlPathInfo> _webPageUrlPathInfoProvider;
+        private readonly IInfoProvider<ContentLanguageInfo> _contentLanguageInfoProvider;
+        private readonly IInfoProvider<SettingsKeyInfo> _settingsKeyInfoProvider;
+        private readonly IInfoProvider<MemberInfo> _memberInfoProvider;
+        private readonly IInfoProvider<MemberRoleTagInfo> _memberRoleTagInfoProvider;
+        private readonly IInfoProvider<TagInfo> _tagInfoProvider;
+        private readonly IContentLanguageRetriever _contentLanguageRetriever;
 
-        public HttpContext _httpContext { get; }
+        public HttpContext? _httpContext { get; }
 
         public AuthorizationContext(IProgressiveCache progressiveCache,
             IHttpContextAccessor httpContextAccessor,
-            IUserInfoProvider userInfoProvider,
-            IUserRoleInfoProvider userRoleInfoProvider,
-            IUserSiteInfoProvider userSiteInfoProvider,
             IEventLogService eventLogService,
-            IPageRetriever pageRetriever,
-            IPageDataContextRetriever pageDataContextRetriever,
             IAuthorizationContextCustomizer authorizationContextCustomizer,
-            ISiteService siteService)
+            IWebsiteChannelContext websiteChannelContext,
+            IWebPageDataContextRetriever webPageDataContextRetriever,
+            IContentQueryExecutor contentQueryExecutor,
+            IInfoProvider<WebPageUrlPathInfo> webPageUrlPathInfoProvider,
+            IInfoProvider<ContentLanguageInfo> contentLanguageInfoProvider,
+            IInfoProvider<SettingsKeyInfo> settingsKeyInfoProvider,
+            IInfoProvider<MemberInfo> memberInfoProvider,
+            IInfoProvider<MemberRoleTagInfo> memberRoleTagInfoProvider,
+            IInfoProvider<TagInfo> tagInfoProvider,
+            IContentLanguageRetriever contentLanguageRetriever)
         {
             _progressiveCache = progressiveCache;
             _httpContextAccessor = httpContextAccessor;
-            _userInfoProvider = userInfoProvider;
-            _userRoleInfoProvider = userRoleInfoProvider;
-            _userSiteInfoProvider = userSiteInfoProvider;
             _eventLogService = eventLogService;
-            _pageRetriever = pageRetriever;
-            _pageDataContextRetriever = pageDataContextRetriever;
             _authorizationContextCustomizer = authorizationContextCustomizer;
-            _siteService = siteService;
+            _websiteChannelContext = websiteChannelContext;
+            _webPageDataContextRetriever = webPageDataContextRetriever;
+            _contentQueryExecutor = contentQueryExecutor;
+            _webPageUrlPathInfoProvider = webPageUrlPathInfoProvider;
+            _contentLanguageInfoProvider = contentLanguageInfoProvider;
+            _settingsKeyInfoProvider = settingsKeyInfoProvider;
+            _memberInfoProvider = memberInfoProvider;
+            _memberRoleTagInfoProvider = memberRoleTagInfoProvider;
+            _tagInfoProvider = tagInfoProvider;
+            _contentLanguageRetriever = contentLanguageRetriever;
             _httpContext = _httpContextAccessor.HttpContext;
         }
 
-        public async Task<TreeNode> GetCurrentPageAsync()
+        public async Task<IWebPageFieldsSource?> GetCurrentPageAsync()
         {
-            TreeNode foundNode = null;
-            string SiteName = SiteContextSafe().SiteName;
-            string DefaultCulture = SiteContextSafe().DefaultVisitorCulture;
+            IWebPageFieldsSource? foundPage = null;
+            var currentSite = await SiteContextSafe();
 
-            // Create GetPage Event Arguments
-            GetPageEventArgs pageArgs = new GetPageEventArgs()
-            {
-                RelativeUrl = GetUrl(UriHelper.GetDisplayUrl(_httpContext.Request), (_httpContext.Request.PathBase.HasValue ? _httpContext.Request.PathBase.Value : ""), SiteName),
-                HttpContext = _httpContext,
-                SiteName = SiteName,
-                Culture = await GetCultureAsync(),
-                DefaultCulture = DefaultCulture
-            };
+            if (_httpContext == null) {
+                return null;
+            }
+            var previewEnabled = GetPreviewEnabled(_httpContext);
+
+            // First check Custom Page Finder Logic
+            var pageArgs = new GetPageEventArgs(
+                relativeUrl: await GetUrl(UriHelper.GetDisplayUrl(_httpContext.Request), (_httpContext.Request.PathBase.HasValue ? _httpContext.Request.PathBase.Value : "")),
+                siteName: _websiteChannelContext.WebsiteChannelName,
+                httpContext: _httpContext,
+                culture: await GetCultureAsync(),
+                defaultCulture: currentSite.DefaultLanguage
+            );
 
             var customTreeNode = await _authorizationContextCustomizer.GetCustomPageAsync(pageArgs, AuthorizationEventType.Before);
-            if (customTreeNode != null)
-            {
-                if (customTreeNode.NodeACLID <= 0)
-                {
-                    throw new NullReferenceException("The TreeNode does not contain the NodeACLID property, which is required for Permission lookup.");
-                }
-                foundNode = customTreeNode;
+            if (customTreeNode != null) {
+                foundPage = customTreeNode;
             }
 
-            if (foundNode == null)
-            {
-                // Try to find the page from node alias path, default lookup type
-
-                try
-                {
-
-                    if (_pageDataContextRetriever.TryRetrieve<TreeNode>(out var pageContext))
-                    {
-                        foundNode = pageContext.Page;
-                    }
-                }
-                catch (InvalidOperationException)
-                {
-                    // this may be thrown for invalid pages or internal requests
-                }
-                if (foundNode == null)
-                {
-                    foundNode = await _progressiveCache.LoadAsync(async cs =>
-                    {
-                        var pages = await DocumentHelper.GetDocuments()
-                        .Path(pageArgs.RelativeUrl, PathTypeEnum.Single)
-                        .Culture(!string.IsNullOrWhiteSpace(pageArgs.Culture) ? pageArgs.Culture : pageArgs.DefaultCulture)
-                        .CombineWithAnyCulture()
-                        .CombineWithDefaultCulture()
-                        .OnSite(pageArgs.SiteName)
-                        .Columns("NodeACLID", "NodeID", "DocumentID", "DocumentCulture") // The Fields required for authorization
-                        .GetEnumerableTypedResultAsync();
-
-                        var pageList = pages.ToList();
-                        var page = pageList.FirstOrDefault();
-                        if (cs.Cached && pageList.Any())
-                        {
-                            cs.CacheDependency = CacheHelper.GetCacheDependency(new string[]
-                            {
-                                    $"nodeid|{page.NodeID}",
-                                    $"documentid|{page.DocumentID}"
-                            });
-                        }
-                        return page;
-                    }, new CacheSettings(1440, "KenticoAuthorizeGetTreeNode", pageArgs.RelativeUrl, pageArgs.SiteName));
-
-                }
-
-                pageArgs.FoundPage = foundNode;
-                var customTreeNodeAfter = await _authorizationContextCustomizer.GetCustomPageAsync(pageArgs, AuthorizationEventType.After);
-                if (customTreeNodeAfter != null)
-                {
-                    if (customTreeNode.NodeACLID <= 0)
-                    {
-                        new NullReferenceException("The TreeNode does not contain the NodeACLID property, which is required for Permission lookup.");
-                    }
-                    foundNode = pageArgs.FoundPage;
-                }
+            // Use Kentico Page Builder Context
+            if (foundPage == null && _webPageDataContextRetriever.TryRetrieve(out var webPageDataContext)) {
+                foundPage = await GetWebPageFieldSource(webPageDataContext.WebPage.WebPageItemID, webPageDataContext.WebPage.ContentTypeName, webPageDataContext.WebPage.LanguageName, webPageDataContext.WebPage.WebsiteChannelID, GetPreviewEnabled(_httpContext));
             }
 
-            return foundNode;
+            // Try to find the page from web page item tree path, default lookup type
+            foundPage ??= await GetPageFromUrlPathAndChannel(pageArgs.RelativeUrl, _websiteChannelContext.WebsiteChannelID);
+
+            return foundPage;
         }
 
-        public Task<string> GetCurrentPageTemplateIdentifierAsync(TreeNode page)
+        private bool GetPreviewEnabled(HttpContext httpContext)
         {
-            if (page == null)
-            {
-                return Task.FromResult(string.Empty);
+            try {
+                return httpContext.Kentico().Preview().Enabled;
+            } catch(Exception) {
+                return false;
             }
-            string templateIdentifier = "";
-            try
-            {
-                string templateJson = (string)page.GetValue("DocumentPageTemplateConfiguration", "");
-                if (!string.IsNullOrWhiteSpace(templateJson))
-                {
-                    var jConfiguration = JObject.Parse(templateJson);
-                    var config = (dynamic)jConfiguration;
-                    templateIdentifier = config.identifier;
+        }
+
+        public async Task<string?> GetCurrentPageTemplateIdentifierAsync(IWebPageFieldsSource page)
+        {
+            if (page == null) {
+                return null;
+            }
+
+            var previewEnabled = _httpContext != null && GetPreviewEnabled(_httpContext);
+
+            return await _progressiveCache.LoadAsync(async cs => {
+
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency($"webpageitem|byid|{page.SystemFields.WebPageItemID}");
                 }
-            }
-            catch (Exception ex)
-            {
-                _eventLogService.LogException("Authorization.Kentico", "Invalid Template JSON", ex, additionalMessage: "Could not find template name for page " + page.NodeAliasPath);
-            }
-            return Task.FromResult(templateIdentifier);
+
+                var query =
+@$"Select {nameof(ContentItemCommonDataInfo.ContentItemCommonDataPageTemplateConfiguration)} 
+    from CMS_ContentItemCommonData 
+        where {nameof(ContentItemCommonDataInfo.ContentItemCommonDataContentItemID)} = {page.SystemFields.ContentItemID}
+        and {nameof(ContentItemCommonDataInfo.ContentItemCommonDataContentLanguageID)} = {page.SystemFields.ContentItemCommonDataContentLanguageID}
+        order by {nameof(ContentItemCommonDataInfo.ContentItemCommonDataIsLatest)} {(previewEnabled ? "asc" : "desc")}";
+
+                var result = await ConnectionHelper.ExecuteReaderAsync(query, [], QueryTypeEnum.SQLQuery, CommandBehavior.Default, CancellationToken.None);
+                var ds = DatasetFromReader(result);
+
+                if (ds.Tables[0].Rows.Count > 0) {
+                    try {
+                        var templateJson = (string)ds.Tables[0].Rows[0][nameof(ContentItemCommonDataInfo.ContentItemCommonDataPageTemplateConfiguration)];
+                        if (!string.IsNullOrWhiteSpace(templateJson)) {
+                            var jConfiguration = JObject.Parse(templateJson);
+                            var config = (dynamic)jConfiguration;
+                            return config.identifier;
+                        }
+                    } catch (Exception ex) {
+                        _eventLogService.LogException("Authorization.Kentico", "Invalid Template JSON", ex, additionalMessage: "Could not find template name for page with web page item id " + page.SystemFields.WebPageItemID);
+                    }
+                }
+                return null;
+            }, new CacheSettings(30, "Authorization_GetPageTemplateIdentifier", page.SystemFields.ContentItemID, page.SystemFields.ContentItemCommonDataContentLanguageID, previewEnabled));
+        }
+
+        private static UserContext GetPublicUserContext()
+        {
+            return new UserContext() {
+                UserName = "public",
+                IsAuthenticated = false,
+                Roles = []
+            };
         }
 
         public async Task<UserContext> GetCurrentUserAsync()
         {
+            if (_httpContext == null) {
+                return GetPublicUserContext();
+            }
+
             var site = SiteContextSafe();
 
             // Create GetUser Event Arguments
-            GetUserEventArgs userArgs = new GetUserEventArgs()
-            {
-                HttpContext = _httpContext
-            };
+            var userArgs = new GetUserEventArgs(_httpContext);
 
             // Allow them to customize the user context
             var customUserContext = await _authorizationContextCustomizer.GetCustomUserContextAsync(userArgs, AuthorizationEventType.Before);
-            if (customUserContext != null)
-            {
+            if (customUserContext != null) {
                 return customUserContext;
             }
 
             // Get the current user
-            var foundUser = await GetCurrentUserInfoAsync();
+            var foundUser = await GetCurrentUserInfoAsync(_httpContext);
 
             // Allow them to customize the user context again now with the current UserInfo known
             userArgs.FoundUser = foundUser;
             customUserContext = await _authorizationContextCustomizer.GetCustomUserContextAsync(userArgs, AuthorizationEventType.After);
-            if (customUserContext != null)
-            {
+            if (customUserContext != null) {
                 return customUserContext;
             }
 
             // Build user context
-            return await _progressiveCache.LoadAsync(async cs =>
-            {
-                if (cs.Cached)
-                {
+            if (foundUser == null || !foundUser.MemberEnabled || foundUser.MemberName.Equals("public", StringComparison.OrdinalIgnoreCase)) {
+                return GetPublicUserContext();
+            }
+
+            return await _progressiveCache.LoadAsync(async cs => {
+                if (cs.Cached) {
                     cs.CacheDependency = CacheHelper.GetCacheDependency(new string[]
                     {
-                        $"{UserInfo.OBJECT_TYPE}|byname|{foundUser?.UserName ?? "public"}",
-                        $"{UserRoleInfo.OBJECT_TYPE}|all",
-                        $"{RolePermissionInfo.OBJECT_TYPE}|all"
+                        $"{MemberRoleTagInfo.OBJECT_TYPE}|all"
                     });
                 }
 
-                if (foundUser?.IsPublic() ?? true)
-                {
-                    var userContext = new UserContext()
-                    {
-                        UserName = "public",
-                        IsAuthenticated = false,
-                        Roles = Array.Empty<string>()
-                    };
-                    return userContext;
-                }
-                else
-                {
-                    // Get roles and permissions
-                    var userContext = new UserContext()
-                    {
-                        UserName = foundUser.UserName,
-                        IsAuthenticated = true,
-                        IsGlobalAdmin = foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.GlobalAdmin,
-                    };
+                // get roles
+                var roles = (await _tagInfoProvider.Get()
+                .Source(x => x.InnerJoin<MemberRoleTagInfo>(nameof(TagInfo.TagID), nameof(MemberRoleTagInfo.MemberRoleTagTagID)))
+                .WhereEquals(nameof(MemberRoleTagInfo.MemberRoleTagMemberID), foundUser.MemberID)
+                .Columns(nameof(TagInfo.TagName))
+                .GetEnumerableTypedResultAsync())
+                .Select(x => x.TagName);
 
-                    if (foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Admin || foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Editor)
-                    {
-                        // Only add editor/admin if they are on this site
-                        var userSite = await new ObjectQuery<UserSiteInfo>()
-                            .WhereEquals(nameof(UserSiteInfo.UserID), foundUser.UserID)
-                            .WhereEquals(nameof(UserSiteInfo.SiteID), site.SiteID)
-                            .GetEnumerableTypedResultAsync();
-                        if (userSite.Any())
-                        {
-                            userContext.IsEditor = foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Editor;
-                            userContext.IsAdministrator = foundUser.SiteIndependentPrivilegeLevel == CMS.Base.UserPrivilegeLevelEnum.Admin;
-                        }
-                    }
-
-                    // Roles
-                    var rolesResults = (await new ObjectQuery<RoleInfo>()
-                        .Where($"RoleID in (Select UR.RoleID from CMS_UserRole UR where UserID = {foundUser.UserID})")
-                        .WhereEqualsOrNull(nameof(RoleInfo.SiteID), site.SiteID)
-                        .Columns(nameof(RoleInfo.RoleName))
-                        .GetEnumerableTypedResultAsync());
-                    var roles = rolesResults.ToList().Select(x => x.RoleName);
-
-                    var membershipRolesResults = (await new ObjectQuery<RoleInfo>()
-                        .Source(x => x.Join<MembershipRoleInfo>("CMS_Role.RoleID", "CMS_MembershipRole.RoleID"))
-                        .Source(x => x.Join<MembershipInfo>("CMS_MembershipRole.MembershipID", "CMS_Membership.MembershipID"))
-                        .Source(x => x.Join<MembershipUserInfo>("CMS_Membership.MembershipID", "CMS_MembershipUser.MembershipID"))
-                        .WhereEquals("UserID", foundUser.UserID)
-                        .Columns(nameof(RoleInfo.RoleName))
-                        .GetEnumerableTypedResultAsync());
-                    var membershipRoles = membershipRolesResults.ToList().Select(x => x.RoleName);
-
-                    userContext.Roles = roles.Union(membershipRoles);
-
-                    // Permission names
-                    var permissionsResults = (await new ObjectQuery<PermissionNameInfo>()
-                         .Source(x => x.Join<ResourceInfo>("CMS_Permission.ResourceID", "CMS_Resource.ResourceID"))
-                         .Source(x => x.Join<RolePermissionInfo>("CMS_Permission.PermissionID", "CMS_RolePermission.PermissionID"))
-                         .Source(x => x.Join<RoleInfo>("CMS_RolePermission.RoleID", "CMS_Role.RoleID"))
-                         .WhereIn(nameof(RoleInfo.RoleName), userContext.Roles.ToArray())
-                         .Columns($"{nameof(ResourceInfo.ResourceName)}+'.'+{nameof(PermissionNameInfo.PermissionName)} as PermissionName")
-                         .GetEnumerableResultAsync());
-                    userContext.Permissions = permissionsResults.ToList().Select(x => (string)x["PermissionName"]);
-                    return userContext;
-                }
-
-            }, new CacheSettings(60, "UserContext", foundUser?.UserName ?? "public", site.SiteID));
+                return new UserContext() {
+                    IsAuthenticated = true,
+                    UserName = foundUser.MemberName,
+                    Roles = roles
+                };
+            }, new CacheSettings(60, "UserContext", foundUser?.MemberName ?? "public"));
         }
 
-        private SiteInfo SiteContextSafe()
+        private async Task<WebsiteChannelContext> SiteContextSafe()
         {
-            try
-            {
-                return (SiteInfo)_siteService.CurrentSite;
-            } catch(Exception)
-            {
-                // if site context isn't available yet return first site...
-                return _progressiveCache.Load(cs =>
-                {
-                    if (cs.Cached)
-                    {
-                        cs.CacheDependency = CacheHelper.GetCacheDependency("cms.site|all");
-                    }
-                    return SiteInfo.Provider.Get().TopN(1).FirstOrDefault();
-                }, new CacheSettings(1440, "KenticoAuthorizationGetSiteContextSafe"));
+            int webChannelId = 0;
+            try {
+                webChannelId = _websiteChannelContext.WebsiteChannelID;
+            } catch (Exception) {
+
             }
+
+            // if site context isn't available yet return first website...
+            return await _progressiveCache.Load(async cs => {
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency($"{WebsiteChannelInfo.OBJECT_TYPE}|all");
+                }
+
+                var query = @$"select WebsiteChannelID, ChannelID, ChannelName, ContentLanguageName from CMS_WebsiteChannel
+inner join CMS_Channel on ChannelID = WebsiteChannelChannelID
+inner join CMS_ContentLanguage on ContentLanguageID = WebsiteChannelPrimaryContentLanguageID
+{(webChannelId > 0 ? $"where WebsiteChannelID = {webChannelId}" : "")} order by WebsiteChannelID";
+
+                var reader = await ConnectionHelper.ExecuteReaderAsync(query, [], QueryTypeEnum.SQLQuery, CommandBehavior.Default, CancellationToken.None);
+                var ds = DatasetFromReader(reader);
+                if (ds.Tables[0].Rows.Count > 0) {
+                    var row = ds.Tables[0].Rows[0];
+                    return new WebsiteChannelContext((int)row["WebsiteChannelID"], (int)row["ChannelID"], (string)row["ChannelName"], (string)row["ContentLanguageName"]);
+                }
+
+                // no web channels
+                return new WebsiteChannelContext(0, 0, "", "");
+            }, new CacheSettings(1440, "Authorize_KenticoAuthorizationGetSiteContextSafe", webChannelId));
         }
+
+        record WebsiteChannelContext(int WebsiteChannelID, int ChannelID, string ChannelName, string DefaultLanguage);
 
         /// <summary>
         /// Gets the Current Culture, needed for User Culture Permissions
@@ -302,71 +262,59 @@ namespace XperienceCommunity.Authorization.Implementations
         /// <returns></returns>
         private async Task<string> GetCultureAsync()
         {
-            string siteName = SiteContextSafe().SiteName;
-            string defaultCulture = SiteContextSafe().DefaultVisitorCulture;
-            string culture = "";
+            // Can't operate without a context
+            if (_httpContext == null) {
+                return "en";
+            }
+
+            var currentSite = await SiteContextSafe();
+            string? culture = null;
 
             // Handle Preview, during Route Config the Preview isn't available and isn't really needed, so ignore the thrown exception
-            bool previewEnabled = false;
-            try
-            {
-                previewEnabled = _httpContextAccessor.HttpContext.Kentico().Preview().Enabled;
-            }
-            catch (InvalidOperationException) { }
+            bool previewEnabled = GetPreviewEnabled(_httpContext);
 
-            GetCultureEventArgs cultureArgs = new GetCultureEventArgs()
-            {
-                DefaultCulture = defaultCulture,
-                SiteName = siteName,
-                Request = _httpContextAccessor.HttpContext.Request,
-                PreviewEnabled = previewEnabled
-            };
+            var cultureArgs = new GetCultureEventArgs(
+                defaultCulture: currentSite.DefaultLanguage,
+                siteName: currentSite.ChannelName,
+                request: _httpContext.Request,
+                previewEnabled: previewEnabled
+            );
 
-            string customCulture = await _authorizationContextCustomizer.GetCustomCultureAsync(cultureArgs, AuthorizationEventType.Before);
-            if (!string.IsNullOrWhiteSpace(customCulture))
-            {
+            var customCulture = await _authorizationContextCustomizer.GetCustomCultureAsync(cultureArgs, AuthorizationEventType.Before);
+            if (!string.IsNullOrWhiteSpace(customCulture)) {
                 return customCulture;
             }
 
             // If Preview is enabled, use the Kentico Preview CultureName
-            if (previewEnabled)
-            {
-                try
-                {
-                    culture = _httpContextAccessor.HttpContext.Kentico().Preview().CultureName;
-                }
-                catch (Exception) { }
-            }
-
-            // If culture still not set, use the LocalizationContext.CurrentCulture
-            if (string.IsNullOrWhiteSpace(culture))
-            {
-                try
-                {
-                    culture = LocalizationContext.CurrentCulture.CultureName;
-                }
-                catch (Exception) { }
+            if (previewEnabled) {
+                try {
+                    culture = _httpContext.Kentico().Preview().LanguageName;
+                } catch (Exception) { }
             }
 
             // If that fails then use the System.Globalization.CultureInfo
-            if (string.IsNullOrWhiteSpace(culture))
-            {
-                try
-                {
-                    culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+            if (string.IsNullOrWhiteSpace(culture)) {
+                try {
+                    culture = (await _contentLanguageRetriever.GetContentLanguageOrThrow(System.Globalization.CultureInfo.CurrentCulture.Name)).ContentLanguageName;
+                    
+                } catch (InvalidOperationException) { 
+                
+                    try {
+                        culture = (await _contentLanguageRetriever.GetContentLanguageOrThrow(System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName)).ContentLanguageName;
+                    } catch(InvalidOperationException) {
+
+                    }
                 }
-                catch (Exception) { }
             }
 
             cultureArgs.Culture = culture;
 
-            string customCultureAfter = await _authorizationContextCustomizer.GetCustomCultureAsync(cultureArgs, AuthorizationEventType.After);
-            if (!string.IsNullOrWhiteSpace(customCultureAfter))
-            {
+            var customCultureAfter = await _authorizationContextCustomizer.GetCustomCultureAsync(cultureArgs, AuthorizationEventType.After);
+            if (!string.IsNullOrWhiteSpace(customCultureAfter)) {
                 culture = customCultureAfter;
             }
 
-            return culture;
+            return culture ?? "en";
         }
 
         /// <summary>
@@ -374,26 +322,23 @@ namespace XperienceCommunity.Authorization.Implementations
         /// </summary>
         /// <param name="relativeUrl"></param>
         /// <param name="applicationPath"></param>
-        /// <param name="siteName"></param>
         /// <returns></returns>
-        private string GetUrl(string relativeUrl, string applicationPath, string siteName)
+        private async Task<string> GetUrl(string relativeUrl, string applicationPath)
         {
             // Remove Application Path from Relative Url if it exists at the beginning
-            if (!string.IsNullOrWhiteSpace(applicationPath) && applicationPath != "/" && relativeUrl.ToLower().IndexOf(applicationPath.ToLower()) == 0)
-            {
-                relativeUrl = relativeUrl.Substring(applicationPath.Length);
+            if (!string.IsNullOrWhiteSpace(applicationPath) && applicationPath != "/" && relativeUrl.StartsWith(applicationPath, StringComparison.InvariantCultureIgnoreCase)) {
+                relativeUrl = relativeUrl[applicationPath.Length..];
             }
 
-            return GetCleanUrl(relativeUrl, siteName);
+            return await GetCleanUrl(relativeUrl);
         }
 
         /// <summary>
         /// Gets the Url cleaned up with special characters removed
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="siteName"></param>
         /// <returns></returns>
-        private string GetCleanUrl(string url, string siteName)
+        private async Task<string> GetCleanUrl(string url)
         {
             // Remove trailing or double //'s and any url parameters / anchors
             url = "/" + url.Trim("/ ".ToCharArray()).Split('?')[0].Split('#')[0];
@@ -401,19 +346,33 @@ namespace XperienceCommunity.Authorization.Implementations
 
             // Replace forbidden characters
             // Remove / from the forbidden characters because that is part of the Url, of course.
-
-            if (!string.IsNullOrWhiteSpace(siteName))
-            {
-                string ForbiddenCharacters = URLHelper.ForbiddenURLCharacters(siteName).Replace("/", "");
-                string Replacement = URLHelper.ForbiddenCharactersReplacement(siteName).ToString();
-                url = ReplaceAnyCharInString(url, ForbiddenCharacters.ToCharArray(), Replacement);
-            }
+            var forbiddenChars = await GetUrlForbiddenCharacterInfo();
+            url = ReplaceAnyCharInString(url, forbiddenChars.ForbiddenCharacters, forbiddenChars.ForbiddenCharacterReplacement);
 
             // Escape special url characters
             url = URLHelper.EscapeSpecialCharacters(url);
 
             return url;
         }
+
+        private async Task<ForbiddenCharactersResults> GetUrlForbiddenCharacterInfo()
+        {
+            return await _progressiveCache.LoadAsync(async cs => {
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency([$"{SettingsKeyInfo.OBJECT_TYPE}|byname|CMSForbiddenURLCharacters", $"{SettingsKeyInfo.OBJECT_TYPE}|byname|CMSForbiddenCharactersReplacement"]);
+                }
+                var items = (await _settingsKeyInfoProvider.Get()
+                .Columns(nameof(SettingsKeyInfo.KeyName), nameof(SettingsKeyInfo.KeyValue))
+                .WhereIn(nameof(SettingsKeyInfo.KeyName), ["CMSForbiddenURLCharacters", "CMSForbiddenCharactersReplacement"])
+                .GetEnumerableTypedResultAsync())
+                .ToDictionary(key => key.KeyName.ToLowerInvariant(), value => value.KeyValue);
+
+                return new ForbiddenCharactersResults((items.TryGetValue("cmsforbiddenurlcharacters", out var chars) ? chars.ToCharArray() : []), (items.TryGetValue("cmsforbiddencharactersreplacement", out var replacement) ? replacement : ""));
+
+            }, new CacheSettings(1440, "Authorization_GetForbiddenCharacters"));
+        }
+
+        record ForbiddenCharactersResults(char[] ForbiddenCharacters, string ForbiddenCharacterReplacement);
 
         /// <summary>
         /// Replaces any char in the char array with the replace value for the string
@@ -422,10 +381,10 @@ namespace XperienceCommunity.Authorization.Implementations
         /// <param name="charsToReplace">The character array of characters to replace</param>
         /// <param name="replaceValue">The value to replace them with</param>
         /// <returns>The cleaned string</returns>
-        private string ReplaceAnyCharInString(string value, char[] charsToReplace, string replaceValue)
+        private static string ReplaceAnyCharInString(string value, char[] charsToReplace, string replaceValue)
         {
             string[] temp = value.Split(charsToReplace, StringSplitOptions.RemoveEmptyEntries);
-            return String.Join(replaceValue, temp);
+            return string.Join(replaceValue, temp);
         }
 
         /// <summary>
@@ -433,51 +392,128 @@ namespace XperienceCommunity.Authorization.Implementations
         /// </summary>
         /// <param name="httpContext">The HttpContext of the request</param>
         /// <returns>The UserInfo, should return the Public user if they are not logged in.</returns>
-        public async Task<UserInfo> GetCurrentUserInfoAsync()
+        public async Task<MemberInfo?> GetCurrentUserInfoAsync(HttpContext httpContext)
         {
-            UserInfo foundUser = null;
+            MemberInfo? foundUser = null;
             var site = SiteContextSafe();
             // Create GetUser Event Arguments
-            GetUserEventArgs userArgs = new GetUserEventArgs()
-            {
-                HttpContext = _httpContext
-            };
+            var userArgs = new GetUserEventArgs(httpContext);
 
             var customUser = await _authorizationContextCustomizer.GetCustomUserAsync(userArgs, AuthorizationEventType.Before);
-            if (customUser != null)
-            {
+            if (customUser != null) {
                 return customUser;
             }
 
-
             // Grab Username and find the user
-            string username = !string.IsNullOrWhiteSpace(userArgs.FoundUserName) ? userArgs.FoundUserName : DataHelper.GetNotEmpty((_httpContext.User != null && _httpContext.User.Identity != null ? _httpContext.User.Identity.Name : "public"), "public");
+            string username = !string.IsNullOrWhiteSpace(userArgs.FoundUserName) ? userArgs.FoundUserName : httpContext?.User?.Identity?.Name ?? "public";
 
-            foundUser = await _progressiveCache.LoadAsync(async cs =>
-            {
-                var userObj = await _userInfoProvider.GetAsync(username);
+            foundUser = await _progressiveCache.LoadAsync(async cs => {
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency("cms.member|byname|" + userArgs.FoundUserName);
+                }
 
-                if (userObj == null || !userObj.Enabled)
-                {
-                    userObj = await _userInfoProvider.GetAsync("public");
+                var memberObj = await _memberInfoProvider.Get().WhereEquals(nameof(MemberInfo.MemberName), username).GetEnumerableTypedResultAsync();
+                if (!memberObj.Any()) {
+                    return null;
                 }
-                if (cs.Cached)
-                {
-                    cs.CacheDependency = CacheHelper.GetCacheDependency("cms.user|byid|" + userObj.UserID);
-                }
-                return userObj;
-            }, new CacheSettings(60, "KenticoAuthorizeGetCurrentUser", username));
+                var foundMember = memberObj.First();
+                return foundMember.MemberEnabled ? foundMember : null;
+            }, new CacheSettings(60, "Authorization_KenticoAuthorizeGetCurrentUser", username));
 
             userArgs.FoundUser = foundUser;
             customUser = await _authorizationContextCustomizer.GetCustomUserAsync(userArgs, AuthorizationEventType.Before);
-            if (customUser != null)
-            {
+            if (customUser != null) {
                 foundUser = customUser;
             }
 
             return foundUser;
         }
 
+
+        private async Task<IWebPageFieldsSource?> GetPageFromUrlPathAndChannel(string relativeUrl, int websiteChannelID)
+        {
+            var langIdToName = await GetContentLanguageIDToName();
+
+            var previewEnabled = _httpContext != null && GetPreviewEnabled(_httpContext);
+            var reader = await _progressiveCache.LoadAsync(async cs => {
+
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency($"{WebPageUrlPathInfo.OBJECT_TYPE}|all");
+                }
+
+                return await _webPageUrlPathInfoProvider.Get()
+                .Source(x => x.InnerJoin<WebPageItemInfo>(nameof(WebPageUrlPathInfo.WebPageUrlPathWebPageItemID), nameof(WebPageItemInfo.WebPageItemID)))
+                .Source(x => x.InnerJoin<ContentItemInfo>(nameof(WebPageItemInfo.WebPageItemContentItemID), nameof(ContentItemInfo.ContentItemID)))
+                .Source(x => x.InnerJoin<DataClassInfo>(nameof(ContentItemInfo.ContentItemContentTypeID), nameof(DataClassInfo.ClassID)))
+                .WhereEquals(nameof(WebPageUrlPathInfo.WebPageUrlPath), relativeUrl.TrimStart('~').TrimStart('/'))
+                .WhereEquals(nameof(WebPageUrlPathInfo.WebPageUrlPathWebsiteChannelID), websiteChannelID)
+                .Columns(nameof(WebPageUrlPathInfo.WebPageUrlPathWebPageItemID), nameof(WebPageUrlPathInfo.WebPageUrlPathWebsiteChannelID), nameof(DataClassInfo.ClassName), nameof(WebPageUrlPathInfo.WebPageUrlPathContentLanguageID))
+                .ExecuteReaderAsync();
+            }, new CacheSettings(30, "Authorization_GetPageFromUrlPathAndChannel", relativeUrl, websiteChannelID));
+
+            // Convert to Dataset / tables
+            var ds = DatasetFromReader(reader);
+
+            if (ds.Tables[0].Rows.Count > 0) {
+                var row = ds.Tables[0].Rows[0];
+                if (langIdToName.TryGetValue((int)row[nameof(WebPageUrlPathInfo.WebPageUrlPathContentLanguageID)], out var langName)) {
+                    return await GetWebPageFieldSource((int)row[nameof(WebPageUrlPathInfo.WebPageUrlPathWebPageItemID)], (string)row[nameof(DataClassInfo.ClassName)], langName, (int)row[nameof(WebPageUrlPathInfo.WebPageUrlPathWebsiteChannelID)], previewEnabled);
+                }
+            }
+
+            return null;
+        }
+
+        private static DataSet DatasetFromReader(IDataReader? reader)
+        {
+            var ds = new DataSet();
+            if (reader == null) {
+                ds.Tables.Add(new DataTable());
+            } else {
+                // read each data result into a datatable
+                do {
+                    var table = new DataTable();
+                    table.Load(reader);
+                    ds.Tables.Add(table);
+                } while (!reader.IsClosed);
+            }
+            return ds;
+        }
+
+        private async Task<Dictionary<int, string>> GetContentLanguageIDToName()
+        {
+            return await _progressiveCache.LoadAsync(async cs => {
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency($"{ContentLanguageInfo.OBJECT_TYPE}|all");
+                }
+                return (await _contentLanguageInfoProvider.Get()
+                .Columns(nameof(ContentLanguageInfo.ContentLanguageID), nameof(ContentLanguageInfo.ContentLanguageName))
+                .GetEnumerableTypedResultAsync())
+                .ToDictionary(key => key.ContentLanguageID, value => value.ContentLanguageName);
+
+            }, new CacheSettings(1440, "Authorization_ContentLanguageIDToName"));
+        }
+
+        private async Task<IWebPageFieldsSource?> GetWebPageFieldSource(int webPageItemID, string className, string languageName, int websiteChannelId, bool previewEnabled)
+        {
+            return await _progressiveCache.LoadAsync(async cs => {
+                if (cs.Cached) {
+                    cs.CacheDependency = CacheHelper.GetCacheDependency($"webpageitem|byid|{webPageItemID}");
+                }
+
+                // convert web page data context to the web page info
+                var queryBuilder = new ContentItemQueryBuilder();
+                queryBuilder.ForContentType(className, query => query
+                    .Where(where => where.WhereEquals(nameof(WebPageFields.WebPageItemID), webPageItemID))
+                    .ForWebsiteChannels([websiteChannelId])
+                    ).InLanguage(languageName, false);
+
+                return (await _contentQueryExecutor.GetMappedWebPageResult<IWebPageFieldsSource>(queryBuilder, options: new ContentQueryExecutionOptions() {
+                    ForPreview = previewEnabled,
+                    IncludeSecuredItems = true
+                })).FirstOrDefault();
+            }, new CacheSettings(30, "Authorization_GetCurrentPageAsync", webPageItemID, className, languageName, websiteChannelId, previewEnabled));
+        }
 
     }
 }

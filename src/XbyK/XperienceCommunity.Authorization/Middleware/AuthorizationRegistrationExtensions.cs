@@ -25,7 +25,7 @@ namespace XperienceCommunity.Authorization
         /// </summary>
         /// <param name="filters"></param>
         /// <returns></returns>
-        public static FilterCollection AddKenticoAuthorization(this FilterCollection filters)
+        public static FilterCollection AddKenticoAuthorizationFilters(this FilterCollection filters)
         {
             filters.Add<PageBuilderAuthorizationFilter>();
             filters.Add<ControllerActionAuthorizationFilter>();

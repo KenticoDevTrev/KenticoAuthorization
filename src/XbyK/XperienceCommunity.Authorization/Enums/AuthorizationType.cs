@@ -2,6 +2,6 @@
 {
     public enum AuthorizationType
     {
-        ByUser, ByRole, ByPermission, ByPageACL, ByAuthenticated
+        ByUser, ByRole, ByPageACL, ByAuthenticated
     }
 }

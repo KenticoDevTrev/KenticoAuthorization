@@ -1,83 +1,51 @@
-﻿using CMS.DataEngine;
-using CMS.DocumentEngine;
-using CMS.Helpers;
-using CMS.Membership;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CMS.Websites;
+using XperienceCommunity.MemberRoles.Repositories;
 
 namespace XperienceCommunity.Authorization.Implementations
 {
-    public class Authorization : IAuthorization
+    public class Authorization(IMemberPermissionSummaryRepository memberPermissionSummaryRepository) : IAuthorization
     {
-        private readonly IProgressiveCache _progressiveCache;
-        private readonly IUserInfoProvider _userInfoProvider;
+        private readonly IMemberPermissionSummaryRepository _memberPermissionSummaryRepository = memberPermissionSummaryRepository;
 
-        public Authorization(IProgressiveCache progressiveCache,
-            IUserInfoProvider userInfoProvider)
-        {
-            _progressiveCache = progressiveCache;
-            _userInfoProvider = userInfoProvider;
-        }
-        public async Task<bool> IsAuthorizedAsync(UserContext user, AuthorizationConfiguration authConfig, TreeNode currentPage = null, string pageTemplateIdentifier = null)
+        public async Task<bool> IsAuthorizedAsync(UserContext user, AuthorizationConfiguration authConfig, IWebPageFieldsSource? currentPage = null, string? pageTemplateIdentifier = null)
         {
             bool authorized = false;
 
             // Will remain true only if no other higher priority authorization items were specified
-            bool OnlyAuthenticatedCheck = true;
-
-            // Global admin
-            if (!authorized && user.IsGlobalAdmin)
-            {
-                authorized = true;
-                OnlyAuthenticatedCheck = false;
-            }
+            bool onlyAuthenticatedCheck = true;
 
             // Roles
-            if (!authorized && authConfig.Roles.Any())
-            {
-                OnlyAuthenticatedCheck = false;
+            if (!authorized && authConfig.Roles.Any()) {
+                onlyAuthenticatedCheck = false;
                 authorized = (user.Roles.Intersect(authConfig.Roles, StringComparer.InvariantCultureIgnoreCase).Any());
             }
 
             // Users no longer there
-            if (!authorized && authConfig.Users.Any())
-            {
-                OnlyAuthenticatedCheck = false;
+            if (!authorized && authConfig.Users.Any()) {
+                onlyAuthenticatedCheck = false;
                 authorized = authConfig.Users.Contains(user.UserName, StringComparer.InvariantCultureIgnoreCase);
             }
 
-            // Explicit Permissions
-            if (!authorized && authConfig.ResourceAndPermissionNames.Any())
-            {
-                OnlyAuthenticatedCheck = false;
-                authorized = authConfig.ResourceAndPermissionNames.Intersect(user.Permissions, StringComparer.InvariantCultureIgnoreCase).Any();
-            }
-
             // Check page level security
-            if (!authorized && authConfig.CheckPageACL && currentPage != null)
-            {
-                // Need basic user from username
-                var userInfo = await _progressiveCache.LoadAsync(async cs =>
-                {
-                    if (cs.Cached)
-                    {
-                        cs.CacheDependency = CacheHelper.GetCacheDependency($"{UserInfo.OBJECT_TYPE}|byname|{user.UserName}");
-                    }
-                    var userResult = (await _userInfoProvider.GetAsync(user.UserName));
-                    return userResult;
-                }, new CacheSettings(30, "GetUserInfoForAuthorization", user.UserName));
+            if (!authorized && authConfig.CheckPageACL && currentPage != null && currentPage.SystemFields.WebPageItemID > 0) {
+                var permissions = await _memberPermissionSummaryRepository.GetMemberRolePermissionSummaryByWebPageItem(currentPage.SystemFields.WebPageItemID);
 
-                // Kentico has own caching so okay to call uncached
-                if (TreeSecurityProvider.IsAuthorizedPerNode(currentPage, authConfig.NodePermissionToCheck, userInfo) != AuthorizationResultEnum.Denied)
-                {
-                    authorized = true;
+                // At this point, if no other check exists and the page ACL does not require authentication, then return authorized.
+                if (onlyAuthenticatedCheck && !permissions.RequiresAuthentication) {
+                    return true;
+                } else if (permissions.RequiresAuthentication && !user.IsAuthenticated) {
+                    return false;
+                }
+
+                // Check member Roles logic
+                if (!authorized && permissions.MemberRoles.Length == 0) {
+                    onlyAuthenticatedCheck = false;
+                    authorized = (user.Roles.Intersect(permissions.MemberRoles, StringComparer.InvariantCultureIgnoreCase).Any());
                 }
             }
 
             // If there were no other authentication properties, check if this is purely an "just requires authentication" area
-            if (OnlyAuthenticatedCheck && (!authConfig.UserAuthenticationRequired || user.IsAuthenticated))
-            {
+            if (onlyAuthenticatedCheck && (!authConfig.UserAuthenticationRequired || user.IsAuthenticated)) {
                 authorized = true;
             }
 

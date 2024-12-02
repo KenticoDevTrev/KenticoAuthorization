@@ -1,4 +1,4 @@
-﻿using CMS.DocumentEngine;
+﻿using CMS.Websites;
 using System.Threading.Tasks;
 
 namespace XperienceCommunity.Authorization
@@ -12,16 +12,16 @@ namespace XperienceCommunity.Authorization
         Task<UserContext> GetCurrentUserAsync();
 
         /// <summary>
-        /// Gets the current TreeNode Page.
+        /// Gets the current Content Item/Page.
         /// </summary>
         /// <returns></returns>
-        Task<TreeNode> GetCurrentPageAsync();
+        Task<IWebPageFieldsSource?> GetCurrentPageAsync();
 
         /// <summary>
         /// Gets the Page Template Identifier (if there is one) on the page.
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        Task<string> GetCurrentPageTemplateIdentifierAsync(TreeNode page);
+        Task<string?> GetCurrentPageTemplateIdentifierAsync(IWebPageFieldsSource page);
     }
 }

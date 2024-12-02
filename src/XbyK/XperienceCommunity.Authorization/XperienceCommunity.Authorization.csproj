@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Version>13.5.0</Version>
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>1.0.0</Version>
     <Authors>Trevor Fayas</Authors>
-    <Company>Heartland Business Systems</Company>
-    <Description>Allows you to place authorization rules on Controller Actions and PageBuilder requests that can authorize based on Users, Roles, Authenticated, Module Permissions, or custom logic.</Description>
+    <Company>Xperience Community</Company>
+    <Description>Allows you to place authorization rules on Controller Actions and PageBuilder requests that can authorize based on Users (Members), Roles, Authenticated, or custom logic.  This version leverages the XperienceCommunity.MemberRoles system for Role and Page Permission Assignment.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</PackageProjectUrl>
     <RepositoryUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</RepositoryUrl>
@@ -16,13 +16,21 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <PackageId>XperienceCommunity.DevTools.Authorization.MemberRoles</PackageId>
+    <Title>Xperience Authorization (Using Member Roles)</Title>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Kentico.Xperience.AspNetCore.WebApp" Version="13.0.5" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="XperienceCommunity.MemberRoles" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>

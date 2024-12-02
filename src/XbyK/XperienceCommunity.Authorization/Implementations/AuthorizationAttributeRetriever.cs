@@ -1,5 +1,4 @@
 ﻿using CMS.Core;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace XperienceCommunity.Authorization.Implementations
