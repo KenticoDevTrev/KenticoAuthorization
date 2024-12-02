@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Version>1.0.0</Version>
+    <Authors>Trevor Fayas</Authors>
+    <Company>Xperience Community</Company>
+    <Description>Allows you to place authorization rules on Controller Actions and PageBuilder requests that can authorize based on Users (Members), Roles, Authenticated, or custom logic.  This version leverages the XperienceCommunity.MemberRoles system for Role and Page Permission Assignment.  Admin package only contains the dependency for the Member Roles Admin (for easier installation)</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/KenticoDevTrev/KenticoAuthorization</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageIcon>kentico-icon-128x128.png</PackageIcon>
+    <PackageTags>Kentico, Xperience, Authorization, Permissions</PackageTags>
+    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
+    <PackageId>XperienceCommunity.DevTools.Authorization.MemberRoles.Admin</PackageId>
+    <Title>Xperience Authorization (Using Member Roles)</Title>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="XperienceCommunity.MemberRoles.Admin" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\kentico-icon-128x128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XperienceCommunity.Authorization\XperienceCommunity.Authorization.csproj" />
+  </ItemGroup>
+
+</Project>
