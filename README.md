@@ -12,11 +12,12 @@ It also allows for a custom Unauthorized Redirect path in case you need to speci
 
 ## Library Version Matrix and Dependency Notice
 
-This project is using [Xperience Version v29.7.0](https://docs.kentico.com/changelog#refresh-november-14-2024), and depends on the [XperienceCommunity.MemberRoles](https://github.com/KenticoDevTrev/MembershipRoles_Temp) package since Xperience by Kentico does not have Member Roles built in yet.  An additional version should be released at the time Kentico does implement member roles and permissions.
+This project is using [Xperience Version v30.0.0](https://docs.kentico.com/changelog#refresh-november-14-2024), and depends on the [XperienceCommunity.MemberRoles](https://github.com/KenticoDevTrev/MembershipRoles_Temp) package since Xperience by Kentico does not have Member Roles built in yet.  An additional version should be released at the time Kentico does implement member roles and permissions.
 
-| Xperience Version | Library Version |
-| ----------------- | --------------- |
-| >= 29.7.*         | 1.0.0           |
+| Xperience Version  | Library Version |
+| ------------------ | --------------- |
+| >= 30.0.*          | 2.0.0           |
+|    29.7.*          | 1.0.0           |
 
 
 If you have Kentico Xperience 13 (.net core 5.0) on hotfix 5 or above, please see the [KX13 ReadMe](README_KX13.md).
