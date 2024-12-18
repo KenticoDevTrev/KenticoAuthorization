@@ -22,6 +22,8 @@ namespace XperienceCommunity.Authorization
             if (path.StartsWith(_adminPathRetriever.GetApiPrefix(), StringComparison.OrdinalIgnoreCase)
                 ||
                 path.StartsWith(_adminPathRetriever.GetAdminPrefix(), StringComparison.OrdinalIgnoreCase)
+                || 
+                path.StartsWith("/Kentico.", StringComparison.OrdinalIgnoreCase)
                 ) {
                 return;
             }

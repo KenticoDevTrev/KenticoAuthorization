@@ -6,7 +6,6 @@ using CMS.DataEngine;
 using CMS.Headless.Internal;
 using CMS.Helpers;
 using CMS.Membership;
-using CMS.Modules;
 using CMS.Websites;
 using CMS.Websites.Internal;
 using CMS.Websites.Routing;
@@ -14,7 +13,7 @@ using Kentico.Content.Web.Mvc;
 using Kentico.Web.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Data;
 using System.Web;
 using XperienceCommunity.Authorization.Events;
@@ -144,9 +143,8 @@ namespace XperienceCommunity.Authorization.Implementations
                     try {
                         var templateJson = (string)ds.Tables[0].Rows[0][nameof(ContentItemCommonDataInfo.ContentItemCommonDataVisualBuilderTemplateConfiguration)];
                         if (!string.IsNullOrWhiteSpace(templateJson)) {
-                            var jConfiguration = JObject.Parse(templateJson);
-                            var config = (dynamic)jConfiguration;
-                            return config.identifier;
+                            var configuration = JsonConvert.DeserializeObject<PageTemplateConfiguration>(templateJson);
+                            return configuration?.Identifier ?? string.Empty;
                         }
                     } catch (Exception ex) {
                         _eventLogService.LogException("Authorization.Kentico", "Invalid Template JSON", ex, additionalMessage: "Could not find template name for page with web page item id " + page.SystemFields.WebPageItemID);

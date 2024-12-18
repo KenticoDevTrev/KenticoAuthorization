@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using XperienceCommunity.Authorization;
 using XperienceCommunity.Authorization.Implementations;
 
-namespace XperienceCommunity.Authorization
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class AuthorizationRegistrationExtensions
     {
@@ -15,7 +16,7 @@ namespace XperienceCommunity.Authorization
         {
             return services
                     .AddSingleton<IAuthorizationAttributeRetriever, AuthorizationAttributeRetriever>()
-                    .AddScoped<IAuthorization, Implementations.Authorization>()
+                    .AddScoped<IAuthorization, Authorization>()
                     .AddScoped<IAuthorizationContext, AuthorizationContext>()
                     .AddScoped<IAuthorizationContextCustomizer, AuthorizationContextCustomizer>();
         }

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>2.0.1</Version>
+    <Version>2.0.2</Version>
     <Authors>Trevor Fayas</Authors>
     <Company>Xperience Community</Company>
     <Description>Allows you to place authorization rules on Controller Actions and PageBuilder requests that can authorize based on Users (Members), Roles, Authenticated, or custom logic.  This version leverages the XperienceCommunity.MemberRoles system for Role and Page Permission Assignment.</Description>
@@ -12,7 +12,7 @@
     <RepositoryType>Github</RepositoryType>
     <PackageIcon>kentico-icon-128x128.png</PackageIcon>
     <PackageTags>Kentico, Xperience, Authorization, Permissions, Xperience by Kentico, XbyK, Member Roles, MemberRoles</PackageTags>
-    <PackageReleaseNotes>Updated to Xperience 30 w/ change of field name</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed bug with ignored paths and awaiting on the filters (broke page builder)</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -32,7 +32,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="XperienceCommunity.MemberRoles" Version="2.0.1" />
+    <PackageReference Include="XperienceCommunity.MemberRoles" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
