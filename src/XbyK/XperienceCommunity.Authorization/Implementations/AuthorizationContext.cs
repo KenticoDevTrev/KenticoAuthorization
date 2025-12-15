@@ -169,8 +169,6 @@ namespace XperienceCommunity.Authorization.Implementations
                 return GetPublicUserContext();
             }
 
-            var site = SiteContextSafe();
-
             // Create GetUser Event Arguments
             var userArgs = new GetUserEventArgs(HttpContext);
 

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>2.0.6</Version>
+    <Version>2.1.0</Version>
     <Authors>Trevor Fayas</Authors>
     <Company>Xperience Community</Company>
     <Description>Allows you to place authorization rules on Controller Actions and PageBuilder requests that can authorize based on Users (Members), Roles, Authenticated, or custom logic.  This version leverages the XperienceCommunity.MemberRoles system for Role and Page Permission Assignment.</Description>
@@ -12,7 +12,7 @@
     <RepositoryType>Github</RepositoryType>
     <PackageIcon>kentico-icon-128x128.png</PackageIcon>
     <PackageTags>Kentico, Xperience, Authorization, Permissions, Xperience by Kentico, XbyK, Member Roles, MemberRoles</PackageTags>
-    <PackageReleaseNotes>Fixed role check logic issue and further fixed admin checks</PackageReleaseNotes>
+    <PackageReleaseNotes>Updated to Xperience 31.0.0</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -27,12 +27,12 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Kentico.Xperience.WebApp" Version="30.0.0" />
+    <PackageReference Include="Kentico.Xperience.WebApp" Version="31.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="XperienceCommunity.MemberRoles" Version="2.3.2" />
+    <PackageReference Include="XperienceCommunity.MemberRoles" Version="2.6.0" />
   </ItemGroup>
 
   <ItemGroup>
